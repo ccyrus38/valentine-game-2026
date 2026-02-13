@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔒 LOCKED MEMORY</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Noto+Sans+TC:wght@400;700&display=swap');
+        
+        body { 
+            font-family: 'Noto Sans TC', sans-serif; 
+            background-color: #0f172a;
+            color: #e2e8f0;
+        }
+        .mono-font { font-family: 'Share Tech Mono', monospace; }
+        
+        .scan-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: rgba(16, 185, 129, 0.5);
+            animation: scan 3s linear infinite;
+            z-index: 5;
+            pointer-events: none;
+        }
+        @keyframes scan {
+            0% { top: 0%; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+
+        .glitch-effect {
+            animation: glitch 1s linear infinite;
+        }
+        @keyframes glitch {
+            2%, 64% { transform: translate(2px,0) skew(0deg); }
+            4%, 60% { transform: translate(-2px,0) skew(0deg); }
+            62% { transform: translate(0,0) skew(5deg); }
+        }
+
+        .fade-in { animation: fadeIn 1s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Custom Scrollbar for terminal look */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // ==========================================
+        // 👇👇👇 密室逃脫版：內容設定區 👇👇👇
+        // ==========================================
+        // 建議：將題目設計成「謎題」，而不是直接問問題。
+        // 例如：「輸入車牌號碼」、「輸入那天的日期(MMDD)」
+        const GAME_DATA = {
+            agentName: "BB & 豬豬", 
+            missionCode: "VALENTINE-2025",
+            finalMessage: "系統解鎖成功！\n\n其實這個遊戲的終點不是寶藏，而是我們一起走過的路。\n情人節快樂，我的最佳拍檔！❤️",
+            locations: [
+                {
+                    id: 1,
+                    name: "香港 - 起點",
+                    icon: "map-pin",
+                    description: "我們被傳送到了一條熟悉的街道，空氣中飄著麻辣的味道。",
+                    // 探索點：玩者要點擊這些按鈕來找線索
+                    searchPoints: [
+                        { name: "檢查口袋", content: "只有一張八達通，裡面沒錢了。" },
+                        { name: "查看路牌", content: "路牌寫著「長沙灣道」，但這不是關鍵。" },
+                        { name: "撿起地上的收據", content: "線索發現！\n這是一張充滿紅油的收據。\n我們第一次約會的餐廳名字是？(兩個字)" }
+                    ],
+                    answer: "譚仔", 
+                    hint: "提示：米線"
+                },
+                {
+                    id: 2,
+                    name: "野柳 - 奇石陣",
+                    icon: "wind",
+                    description: "周圍都是奇怪形狀的岩石，海風很大，似乎有一個石頭在盯著我們看。",
+                    searchPoints: [
+                        { name: "觸摸岩石", content: "岩石表面很粗糙，這就是風化的痕跡。" },
+                        { name: "望向海邊", content: "海浪拍打著岸邊，聲音很大。" },
+                        { name: "尋找最高的那顆頭", content: "線索發現！\n你看這個石頭的脖子越來越細了。\n它的名字是？" }
+                    ],
+                    answer: "女王頭",
+                    hint: "提示：King的相反"
+                },
+                {
+                    id: 3,
+                    name: "金山 - 擁擠的街道",
+                    icon: "users",
+                    description: "這裡人山人海，大家手裡都端著盤子在街上走來走去。",
+                    searchPoints: [
+                        { name: "跟著人群走", content: "線索發現！\n大家都在排隊買這個肉。\n我們那天為了買它排了半小時，是什麼肉？" },
+                        { name: "看店家招牌", content: "招牌太多了，看花了眼。" }
+                    ],
+                    answer: "鴨肉",
+                    hint: "提示：呱呱"
+                },
+                {
+                    id: 4,
+                    name: "宜蘭 - 夜之市",
+                    icon: "moon",
+                    description: "天黑了，肚子餓了。這裡充滿了蔥油餅和羊肉湯的香味。",
+                    searchPoints: [
+                        { name: "打開Google Map", content: "GPS訊號微弱..." },
+                        { name: "問路人", content: "路人說：就是那個很有名的夜市啊！" },
+                        { name: "看入口拱門", content: "線索發現！\n拱門上寫著我們要去的夜市名字。\n三個字：" }
+                    ],
+                    answer: "羅東夜市",
+                    hint: "提示：不在宜蘭市"
+                },
+                {
+                    id: 5,
+                    name: "日月潭 - 迷霧湖泊",
+                    icon: "cloud-rain",
+                    description: "湖面上有霧，我們坐在一艘船上，手裡拿著一顆熱騰騰的蛋。",
+                    searchPoints: [
+                        { name: "吃一口蛋", content: "線索發現！\n這顆蛋有香菇和紅茶的味道。\n是誰賣的茶葉蛋？(兩個字)" },
+                        { name: "看船票", content: "票上寫著「水社碼頭」。" }
+                    ],
+                    answer: "阿婆",
+                    hint: "提示：年纪很大的女性"
+                },
+                {
+                    id: 6,
+                    name: "高美濕地 - 風車陣",
+                    icon: "fan",
+                    description: "巨大的扇葉在轉動，腳下是泥濘的溼地，天色漸漸變了。",
+                    searchPoints: [
+                        { name: "往西邊看", content: "線索發現！\n那個紅紅圓圓的東西正在落下。\n我們在這裡主要是為了看什麼？(兩個字)" },
+                        { name: "往下看", content: "好多招潮蟹在爬。" }
+                    ],
+                    answer: "夕陽",
+                    hint: "提示：日落"
+                },
+                {
+                    id: 7,
+                    name: "鹿港 - 窄巷迷宮",
+                    icon: "maximize-2", // narrow icon substitute
+                    description: "這裡的巷子窄到兩個人很難同時通過，我們差點卡住。",
+                    searchPoints: [
+                        { name: "嘗試通過", content: "好擠啊！" },
+                        { name: "看牆上的塗鴉", content: "線索發現！\n這條巷子的名字有點害羞。\n輸入巷子的名字(三個字)：" }
+                    ],
+                    answer: "摸乳巷",
+                    hint: "提示：身體部位"
+                },
+                {
+                    id: 8,
+                    name: "嘉義 - 雞之謎",
+                    icon: "utensils",
+                    description: "來到這座城市，空氣中飄著雞油的香味。不是一般的雞。",
+                    searchPoints: [
+                        { name: "聞一聞味道", content: "好香的油蔥味。" },
+                        { name: "看菜單", content: "線索發現！\n這裡的雞肉飯是用什麼雞做的？\n輸入兩個字：" }
+                    ],
+                    answer: "火雞",
+                    hint: "提示：聖誕節會吃的"
+                },
+                {
+                    id: 9,
+                    name: "阿里山 - 黎明行動",
+                    icon: "sunrise",
+                    description: "好冷！現在是凌晨，周圍一片漆黑，我們在等小火車。",
+                    searchPoints: [
+                        { name: "看手錶", content: "線索發現！\n為了看日出，我們設的鬧鐘是幾點？\n(輸入數字，例如 3 或 4 或 5)" },
+                        { name: "喝熱水", content: "稍微暖和了一點。" }
+                    ],
+                    answer: "4",
+                    hint: "提示：天還沒亮"
+                },
+                {
+                    id: 10,
+                    name: "高雄 - 終極密碼",
+                    icon: "heart",
+                    description: "駁二特區的裝置藝術前。我們擺了一個姿勢。",
+                    searchPoints: [
+                        { name: "回想姿勢", content: "線索發現！\n我們的手臂舉過頭頂，組成了一個形狀。\n輸入這個動作的含義(兩個字)：" },
+                        { name: "看照片", content: "照片裡的我們笑得很開心。" }
+                    ],
+                    answer: "比心",
+                    hint: "提示：Heart"
+                }
+            ]
+        };
+        // ==========================================
+        // 👆👆👆 修改結束 👆👆👆
+        // ==========================================
+
+        const Icon = ({ name, className }) => {
+            // Lucide icons rendered via <i> tags
+            return <i data-lucide={name} className={className}></i>;
+        };
+
+        const TerminalLine = ({ text, delay = 0 }) => {
+            const [display, setDisplay] = useState('');
+            
+            useEffect(() => {
+                let i = 0;
+                const timer = setTimeout(() => {
+                    const interval = setInterval(() => {
+                        setDisplay(text.substring(0, i + 1));
+                        i++;
+                        if (i === text.length) clearInterval(interval);
+                    }, 30);
+                    return () => clearInterval(interval);
+                }, delay);
+                return () => clearTimeout(timer);
+            }, [text, delay]);
+
+            return <div className="font-mono text-green-400 mb-1">> {display}<span className="animate-pulse">_</span></div>;
+        };
+
+        const App = () => {
+            const [gameState, setGameState] = useState('boot'); // boot, locked, searching, solving, unlocked, victory
+            const [currentLevelIndex, setCurrentLevelIndex] = useState(0);
+            const [foundClue, setFoundClue] = useState(null);
+            const [inputAnswer, setInputAnswer] = useState('');
+            const [errorMsg, setErrorMsg] = useState('');
+            const [logs, setLogs] = useState([]); // Interaction logs
+
+            useEffect(() => {
+                lucide.createIcons();
+            }, [gameState, currentLevelIndex, foundClue]);
+
+            // Boot Sequence
+            useEffect(() => {
+                if (gameState === 'boot') {
+                    setTimeout(() => setGameState('locked'), 3500);
+                }
+            }, [gameState]);
+
+            const currentLevel = GAME_DATA.locations[currentLevelIndex];
+
+            const handleSearch = (point) => {
+                // Add log
+                const newLog = { 
+                    time: new Date().toLocaleTimeString(), 
+                    msg: `正在分析: ${point.name}...` 
+                };
+                setLogs(prev => [newLog, ...prev]);
+
+                setTimeout(() => {
+                    if (point.content.includes("線索發現")) {
+                        setFoundClue(point.content);
+                        setGameState('solving');
+                        setLogs(prev => [{ time: new Date().toLocaleTimeString(), msg: "⚠️ 警告：偵測到加密數據！" }, ...prev]);
+                    } else {
+                        setLogs(prev => [{ time: new Date().toLocaleTimeString(), msg: `分析結果: ${point.content}` }, ...prev]);
+                    }
+                }, 800);
+            };
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                const cleanInput = inputAnswer.trim().toLowerCase();
+                const cleanAnswer = currentLevel.answer.toLowerCase();
+
+                if (cleanInput === cleanAnswer || cleanInput.includes(cleanAnswer)) {
+                    // Success
+                    setLogs(prev => [{ time: new Date().toLocaleTimeString(), msg: "密碼正確。存取權限已授權。" }, ...prev]);
+                    setGameState('unlocked');
+                    setTimeout(() => {
+                        if (currentLevelIndex + 1 < GAME_DATA.locations.length) {
+                            setCurrentLevelIndex(prev => prev + 1);
+                            setGameState('searching');
+                            setFoundClue(null);
+                            setInputAnswer('');
+                            setLogs([]);
+                        } else {
+                            setGameState('victory');
+                        }
+                    }, 2000);
+                } else {
+                    // Fail
+                    setErrorMsg('ACCESS DENIED');
+                    setInputAnswer('');
+                    setTimeout(() => setErrorMsg(''), 1000);
+                }
+            };
+
+            // 1. Boot Screen
+            if (gameState === 'boot') {
+                return (
+                    <div className="h-screen bg-black flex flex-col items-center justify-center font-mono text-green-500 p-4">
+                        <div className="w-full max-w-md">
+                            <TerminalLine text="INITIALIZING SYSTEM..." delay={0} />
+                            <TerminalLine text="LOADING MEMORY MODULES..." delay={800} />
+                            <TerminalLine text={`TARGET: ${GAME_DATA.agentName}`} delay={1600} />
+                            <TerminalLine text="ENCRYPTING CONNECTION..." delay={2400} />
+                            <div className="mt-8 text-center text-xs text-gray-500 fade-in" style={{animationDelay: '3s'}}>
+                                ESTABLISHING SECURE LINK
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            // 2. Start Screen
+            if (gameState === 'locked') {
+                return (
+                    <div className="h-screen bg-slate-900 flex flex-col items-center justify-center p-6 relative overflow-hidden">
+                        <div className="scan-line"></div>
+                        <div className="z-10 text-center space-y-8 max-w-lg w-full">
+                            <div className="flex justify-center mb-6">
+                                <div className="relative">
+                                    <div className="absolute inset-0 bg-blue-500 blur-xl opacity-20 animate-pulse"></div>
+                                    <i data-lucide="lock" className="w-24 h-24 text-blue-400"></i>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h1 className="text-4xl font-bold text-white mb-2 tracking-widest glitch-effect">LOCKED</h1>
+                                <p className="text-blue-300 mono-font text-sm">MISSION: {GAME_DATA.missionCode}</p>
+                            </div>
+
+                            <div className="bg-slate-800/50 border border-slate-700 p-6 rounded-lg backdrop-blur-sm text-left">
+                                <p className="text-gray-300 mb-4 leading-relaxed">
+                                    探員 <strong>{GAME_DATA.agentName}</strong>，系統偵測到大量加密的回憶檔案。
+                                    為了取回數據，我們需要你在這些地點尋找線索，解開安全鎖。
+                                </p>
+                                <button 
+                                    onClick={() => setGameState('searching')}
+                                    className="w-full bg-blue-600 hover:bg-blue-500 text-white font-mono py-4 rounded shadow-[0_0_15px_rgba(37,99,235,0.5)] transition-all transform active:scale-95"
+                                >
+                                    [ 開始任務 ]
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            // 5. Victory Screen
+            if (gameState === 'victory') {
+                return (
+                    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex flex-col items-center justify-center p-6 text-center">
+                        <div className="mb-8 relative">
+                            <div className="absolute inset-0 bg-pink-500 blur-3xl opacity-30 animate-pulse"></div>
+                            <i data-lucide="heart" className="w-32 h-32 text-pink-500 relative z-10 fill-pink-500/20"></i>
+                        </div>
+                        
+                        <div className="bg-white/10 backdrop-blur-md border border-white/20 p-8 rounded-2xl max-w-lg w-full shadow-2xl">
+                            <h2 className="text-3xl font-bold text-white mb-6">MISSION COMPLETE</h2>
+                            <div className="text-gray-200 text-lg whitespace-pre-line leading-relaxed mb-8">
+                                {GAME_DATA.finalMessage}
+                            </div>
+                            <div className="border-t border-white/10 pt-6">
+                                <p className="text-sm text-pink-300 mono-font mb-2">REWARD CODE:</p>
+                                <div className="text-2xl font-mono font-bold text-white tracking-[0.2em] select-all bg-black/30 p-4 rounded">
+                                    FOREVER-US
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            // 3 & 4. Gameplay (Searching & Solving)
+            return (
+                <div className="min-h-screen bg-slate-950 text-gray-200 font-sans flex flex-col">
+                    {/* Header */}
+                    <div className="bg-slate-900 border-b border-slate-800 p-4 flex justify-between items-center sticky top-0 z-20 shadow-md">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-blue-900/50 rounded flex items-center justify-center border border-blue-500/30">
+                                <Icon name={currentLevel.icon} className="text-blue-400 w-5 h-5" />
+                            </div>
+                            <div>
+                                <div className="text-xs text-blue-400 mono-font">LOCATION_ID: {currentLevel.id.toString().padStart(3, '0')}</div>
+                                <div className="font-bold text-gray-100">{currentLevel.name}</div>
+                            </div>
+                        </div>
+                        <div className="mono-font text-xs text-gray-500">
+                            SEC_LEVEL: {Math.round(((currentLevelIndex + 1) / GAME_DATA.locations.length) * 100)}%
+                        </div>
+                    </div>
+
+                    <main className="flex-1 p-6 max-w-2xl mx-auto w-full flex flex-col gap-6">
+                        
+                        {/* Scene Description */}
+                        <div className="bg-slate-900/50 p-6 rounded-lg border-l-4 border-blue-500 relative overflow-hidden">
+                            <div className="absolute top-0 right-0 p-4 opacity-10">
+                                <Icon name={currentLevel.icon} className="w-32 h-32" />
+                            </div>
+                            <h3 className="text-blue-400 font-bold mb-2 text-sm mono-font tracking-wider">SCENE DESCRIPTION</h3>
+                            <p className="text-lg relative z-10">{currentLevel.description}</p>
+                        </div>
+
+                        {/* Interaction Area */}
+                        {gameState === 'searching' ? (
+                            <div className="space-y-4 fade-in">
+                                <div className="text-sm text-gray-400 mono-font mb-2 text-center">--- 選擇調查區域 ---</div>
+                                <div className="grid grid-cols-1 gap-3">
+                                    {currentLevel.searchPoints.map((point, idx) => (
+                                        <button
+                                            key={idx}
+                                            onClick={() => handleSearch(point)}
+                                            className="group bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-blue-400 p-4 rounded-lg text-left transition-all flex items-center justify-between"
+                                        >
+                                            <span className="flex items-center gap-3">
+                                                <i data-lucide="search" className="w-4 h-4 text-gray-500 group-hover:text-blue-400"></i>
+                                                {point.name}
+                                            </span>
+                                            <i data-lucide="chevron-right" className="w-4 h-4 text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        ) : gameState === 'solving' ? (
+                            <div className="fade-in bg-black/40 border border-green-500/30 p-6 rounded-xl shadow-[0_0_20px_rgba(16,185,129,0.1)]">
+                                <div className="flex items-start gap-4 mb-6">
+                                    <div className="bg-green-500/20 p-3 rounded-full animate-pulse">
+                                        <i data-lucide="key" className="w-6 h-6 text-green-400"></i>
+                                    </div>
+                                    <div className="flex-1">
+                                        <h3 className="text-green-400 font-mono text-sm mb-1">DATA DECRYPTED</h3>
+                                        <p className="text-white whitespace-pre-line font-medium leading-relaxed">
+                                            {foundClue}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <form onSubmit={handleSubmit} className="space-y-4">
+                                    <div className="relative">
+                                        <input 
+                                            type="text" 
+                                            value={inputAnswer}
+                                            onChange={(e) => setInputAnswer(e.target.value)}
+                                            placeholder="ENTER PASSCODE..."
+                                            className="w-full bg-black border-2 border-slate-700 focus:border-green-500 text-green-500 font-mono text-xl p-4 rounded outline-none text-center tracking-widest uppercase transition-colors"
+                                            autoFocus
+                                        />
+                                        {errorMsg && (
+                                            <div className="absolute top-full left-0 w-full text-center text-red-500 font-mono text-sm mt-2 animate-bounce">
+                                                {errorMsg}
+                                            </div>
+                                        )}
+                                    </div>
+                                    <button className="w-full bg-green-600 hover:bg-green-500 text-black font-bold py-3 rounded uppercase tracking-wider transition-colors shadow-lg shadow-green-900/20">
+                                        UNLOCK
+                                    </button>
+                                    <div className="text-center">
+                                        <button 
+                                            type="button" 
+                                            className="text-xs text-slate-500 hover:text-slate-300 mono-font underline decoration-dotted"
+                                            onClick={() => alert(currentLevel.hint)}
+                                        >
+                                            REQUEST HINT_
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        ) : (
+                            // Unlocked state transition
+                            <div className="flex flex-col items-center justify-center py-12 animate-pulse text-green-500">
+                                <i data-lucide="unlock" className="w-16 h-16 mb-4"></i>
+                                <div className="mono-font text-xl">ACCESS GRANTED</div>
+                            </div>
+                        )}
+
+                        {/* Terminal Log */}
+                        <div className="mt-auto bg-black p-4 rounded border border-slate-800 h-32 overflow-y-auto font-mono text-xs opacity-70">
+                            <div className="text-slate-500 mb-2 border-b border-slate-800 pb-1">SYSTEM LOG //</div>
+                            {logs.map((log, i) => (
+                                <div key={i} className="mb-1">
+                                    <span className="text-blue-500">[{log.time}]</span> <span className="text-gray-400">{log.msg}</span>
+                                </div>
+                            ))}
+                            {logs.length === 0 && <span className="text-gray-600">Waiting for user input...</span>}
+                        </div>
+
+                    </main>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
