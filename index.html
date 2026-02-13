@@ -68,22 +68,22 @@
         // 例如：「輸入車牌號碼」、「輸入那天的日期(MMDD)」
         const GAME_DATA = {
             agentName: "BB & 豬豬", 
-            missionCode: "VALENTINE-2025",
+            missionCode: "VALENTINE-2026",
             finalMessage: "系統解鎖成功！\n\n其實這個遊戲的終點不是寶藏，而是我們一起走過的路。\n情人節快樂，我的最佳拍檔！❤️",
             locations: [
                 {
                     id: 1,
-                    name: "香港 - 起點",
+                    name: "台灣 - 起點",
                     icon: "map-pin",
-                    description: "我們被傳送到了一條熟悉的街道，空氣中飄著麻辣的味道。",
+                    description: "我們被傳送到了一個熟悉的地方，空氣中飄著甜甜的味道。",
                     // 探索點：玩者要點擊這些按鈕來找線索
                     searchPoints: [
-                        { name: "檢查口袋", content: "只有一張八達通，裡面沒錢了。" },
-                        { name: "查看路牌", content: "路牌寫著「長沙灣道」，但這不是關鍵。" },
-                        { name: "撿起地上的收據", content: "線索發現！\n這是一張充滿紅油的收據。\n我們第一次約會的餐廳名字是？(兩個字)" }
+                        { name: "檢查口袋", content: "只有一包藥，是感冒了嗎?" },
+                        { name: "查看背包", content: "你可以用它擦鼻涕，但這不是關鍵。" },
+                        { name: "撿起地上的收據", content: "線索發現！\n這是一張充滿奶香的收據。\n我們第一次約會的甜點餐廳名字是？(十個字)" }
                     ],
-                    answer: "譚仔", 
-                    hint: "提示：米線"
+                    answer: "台中市第四信用合作社", 
+                    hint: "提示：有點冷"
                 },
                 {
                     id: 2,
@@ -102,34 +102,34 @@
                     id: 3,
                     name: "金山 - 擁擠的街道",
                     icon: "users",
-                    description: "這裡人山人海，大家手裡都端著盤子在街上走來走去。",
+                    description: "這裡人山人海，大家手裡都在街上走來走去。",
                     searchPoints: [
-                        { name: "跟著人群走", content: "線索發現！\n大家都在排隊買這個肉。\n我們那天為了買它排了半小時，是什麼肉？" },
-                        { name: "看店家招牌", content: "招牌太多了，看花了眼。" }
+                        { name: "往遠邊走走", content: "線索發現！\n那個是什麼?!\n我們那天想做卻做不到的是？(兩個字)" },
+                        { name: "看店家招牌", content: "這是花生糖阿，想不到這麼好吃。" }
                     ],
-                    answer: "鴨肉",
-                    hint: "提示：呱呱"
+                    answer: "泡腳",
+                    hint: "提示：老子褲都脫了"
                 },
                 {
                     id: 4,
                     name: "宜蘭 - 夜之市",
                     icon: "moon",
-                    description: "天黑了，肚子餓了。這裡充滿了蔥油餅和羊肉湯的香味。",
+                    description: "天黑了，肚子餓了。這裡充滿了卜肉跟蔥餅的香味。",
                     searchPoints: [
                         { name: "打開Google Map", content: "GPS訊號微弱..." },
                         { name: "問路人", content: "路人說：就是那個很有名的夜市啊！" },
-                        { name: "看入口拱門", content: "線索發現！\n拱門上寫著我們要去的夜市名字。\n三個字：" }
+                        { name: "看入口拱門", content: "線索發現！\n拱門上寫著我們要去的夜市名字。\n四個字：" }
                     ],
                     answer: "羅東夜市",
-                    hint: "提示：不在宜蘭市"
+                    hint: "提示：小春"
                 },
                 {
                     id: 5,
-                    name: "日月潭 - 迷霧湖泊",
+                    name: "日月潭 - 湖泊",
                     icon: "cloud-rain",
-                    description: "湖面上有霧，我們坐在一艘船上，手裡拿著一顆熱騰騰的蛋。",
+                    description: "下船後有很多人，我們站在一起，手裡拿著一顆熱騰騰的蛋。",
                     searchPoints: [
-                        { name: "吃一口蛋", content: "線索發現！\n這顆蛋有香菇和紅茶的味道。\n是誰賣的茶葉蛋？(兩個字)" },
+                        { name: "吃一口蛋", content: "線索發現！\n這顆蛋不太好吃，沒有預期的香菇和紅茶味道。\n是誰賣的茶葉蛋？(兩個字)" },
                         { name: "看船票", content: "票上寫著「水社碼頭」。" }
                     ],
                     answer: "阿婆",
@@ -137,15 +137,16 @@
                 },
                 {
                     id: 6,
-                    name: "高美濕地 - 風車陣",
-                    icon: "fan",
-                    description: "巨大的扇葉在轉動，腳下是泥濘的溼地，天色漸漸變了。",
+                    name: "香港 - 迪士尼魔法咒",
+                    icon: "Disney",
+                    description: "坐上小熊維尼冒險之旅，一起出發囉。",
                     searchPoints: [
-                        { name: "往西邊看", content: "線索發現！\n那個紅紅圓圓的東西正在落下。\n我們在這裡主要是為了看什麼？(兩個字)" },
-                        { name: "往下看", content: "好多招潮蟹在爬。" }
+                        { name: "去坐上船", content: "哇，那隻河馬好臭哦，那個船長很厭世的在講笑話呢。" }
+                        { name: "去美國小鎮大街", content: "線索發現！\n那雪糕看起來很好吃呢，是期間限定的。\n我們吃了什麼口味的雪糕？(兩個字)" },
+
                     ],
-                    answer: "夕陽",
-                    hint: "提示：日落"
+                    answer: "白桃",
+                    hint: "提示：屁股"
                 },
                 {
                     id: 7,
@@ -157,19 +158,20 @@
                         { name: "看牆上的塗鴉", content: "線索發現！\n這條巷子的名字有點害羞。\n輸入巷子的名字(三個字)：" }
                     ],
                     answer: "摸乳巷",
-                    hint: "提示：身體部位"
+                    hint: "提示：我最愛做的"
                 },
                 {
                     id: 8,
-                    name: "嘉義 - 雞之謎",
+                    name: "嘉義 - 火雞飯",
                     icon: "utensils",
                     description: "來到這座城市，空氣中飄著雞油的香味。不是一般的雞。",
                     searchPoints: [
-                        { name: "聞一聞味道", content: "好香的油蔥味。" },
-                        { name: "看菜單", content: "線索發現！\n這裡的雞肉飯是用什麼雞做的？\n輸入兩個字：" }
+                        { name: "聞一聞味道", content: "嫩的雞肉，還有烤肉漢堡。" },
+                        { name: "看菜單", content: "竟然有比我們聰明的魚，不可能的!" }
+                        { name: "看到奇怪的人", content: "線索發現！\n是無臉男，他手上拿著什麼？\n輸入兩個字：" }
                     ],
-                    answer: "火雞",
-                    hint: "提示：聖誕節會吃的"
+                    answer: "元寶",
+                    hint: "提示：發光的"
                 },
                 {
                     id: 9,
