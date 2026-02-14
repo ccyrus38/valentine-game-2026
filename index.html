@@ -121,7 +121,7 @@
                         { name: "撿起地上的收據", content: "線索發現！\n這是一張充滿奶香的收據。你千萬不想錯了!\n我們第一次約會的甜點餐廳名字是？(十個字)" }
                     ],
                     answer: "台中市第四信用合作社", 
-                    hint: "提示：有點冷，是宮原眼科的分店"
+                    hint: "提示：有點冷，是眼科的分店"
                 },
                 {
                     id: 2,
@@ -144,8 +144,8 @@
                     bgImage: "images/level3.jpg",
                     description: "這裡人山人海，大家手裡都在街上走來走去。",
                     searchPoints: [
-                        { name: "往遠邊走走", content: "線索發現！\n那個是什麼?!\n我們那天想做卻做不到的是？(兩個字)" },
                         { name: "看店家招牌", content: "這是花生糖阿，想不到這麼好吃。" }
+                        { name: "往遠邊走走", content: "線索發現！\n那個是什麼?!\n我們那天想做卻做不到的是？(兩個字)" },
                     ],
                     answer: "泡腳",
                     hint: "提示：老子褲都脫了，你說沒開"
@@ -172,8 +172,8 @@
                     description: "下船後有很多人，我們站在一起，手裡拿著一顆熱騰騰的蛋。",
                     searchPoints: [
                         { name: "看看這店", content: "茶葉店老闆娘的愛情故事真有愛呢" },
-                        { name: "吃一口蛋", content: "線索發現！\n這顆蛋不太好吃，沒有預期的香菇和紅茶味道。\n是誰賣的茶葉蛋？(兩個字)" },
-                        { name: "看船票", content: "票上寫著「水社碼頭」。" }
+                        { name: "看船票", content: "票上寫著「水社碼頭」。" },
+                        { name: "吃一口蛋", content: "線索發現！\n這顆蛋不太好吃，沒有預期的香菇和紅茶味道。\n是誰賣的茶葉蛋？(兩個字)" }
                     ],
                     answer: "阿婆",
                     hint: "提示：年纪很大的女性"
@@ -185,7 +185,7 @@
                     bgImage: "images/level6.jpg",
                     description: "坐上小熊維尼冒險之旅，一起出發囉。",
                     searchPoints: [
-                        { name: "去坐森林油流之旅", content: "哇，那隻河馬好臭哦，那個船長一臉很厭世的在講冷笑話呢。" },
+                        { name: "去坐森林河流之旅", content: "哇，那隻河馬好臭哦，那個船長一臉很厭世的在講冷笑話呢。" },
                         { name: "去美國小鎮大街", content: "線索發現！\n那雪糕看起來很好吃呢，是期間限定的。\n我們吃了什麼口味的雪糕？(兩個字)" }
                     ],
                     answer: "白桃",
@@ -226,8 +226,8 @@
                     bgImage: "images/level9.jpg",
                     description: "好冷！現在是凌晨，周圍一片漆黑，我們在等小火車。",
                     searchPoints: [
-                        { name: "看手錶", content: "線索發現！\n日出時間究竟是幾點？\n(幾點幾分，例如8點02分)" },
-                        { name: "吃了豬肉丸", content: "稍微暖和了一點。" }
+                        { name: "吃了豬肉丸", content: "稍微暖和了一點。" },
+                        { name: "看手錶", content: "線索發現！\n日出時間究竟是幾點？\n(幾點幾分，例如8點02分)" }
                     ],
                     answer: "5點45分",
                     hint: "提示：天還沒亮"
@@ -481,7 +481,7 @@
                             <div className="text-rose-800 text-lg whitespace-pre-line leading-relaxed mb-6 font-medium">{GAME_DATA.finalMessage}</div>
                             <div className="border-t border-white/40 pt-4">
                                 <p className="text-sm text-rose-400 mono-font mb-2">專屬獎勵代碼:</p>
-                                <div className="text-2xl font-mono font-bold text-rose-600 tracking-[0.2em] select-all bg-white/30 p-3 rounded-2xl border border-white/50 dashed">Cyrus一晚3次精盡人亡券</div>
+                                <div className="text-2xl font-mono font-bold text-rose-600 tracking-[0.2em] select-all bg-white/30 p-3 rounded-2xl border border-white/50 dashed">Cyrus一晚3次精盡人亡券(只限一次)</div>
                             </div>
                         </div>
                     </div>
@@ -653,4 +653,5 @@
     </script>
 </body>
 </html>
+
 
