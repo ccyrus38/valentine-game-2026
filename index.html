@@ -434,11 +434,11 @@
                         <img 
                             key={currentLevel.bgImage} 
                             src={currentLevel.bgImage} 
-                            className="w-full h-full object-cover opacity-40 transition-opacity duration-1000 ease-in-out"
+                            className="w-full h-full object-cover opacity-100 transition-opacity duration-1000 ease-in-out"
                             alt="background"
                             onError={(e) => e.target.style.display = 'none'} 
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/80 to-slate-900/80"></div>
+                        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/40 to-slate-900/20"></div>
                     </div>
                     
                     {/* Header */}
