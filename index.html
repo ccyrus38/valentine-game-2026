@@ -227,7 +227,7 @@
         };
 
         // ==========================================
-        // 🛠️ 系統組件 (v4.3 雙相框特別版) 🛠️
+        // 🛠️ 系統組件 (v4.4 圖片置頂修正版) 🛠️
         // ==========================================
 
         // 愛心特效組件
@@ -387,7 +387,7 @@
                             <TerminalLine text={`目標對象: ${GAME_DATA.agentName}`} delay={2000} />
                             <TerminalLine text="準備開啟戀愛冒險..." delay={3000} />
                         </div>
-                        <div className="absolute bottom-4 right-4 text-xs text-pink-400">Love System v4.3</div>
+                        <div className="absolute bottom-4 right-4 text-xs text-pink-400">Love System v4.4</div>
                     </div>
                 );
             }
@@ -468,10 +468,10 @@
 
                         {/* 💻 電腦版 (Desktop)：左右兩張「漂浮玻璃相框」 */}
                         <div className="hidden md:block absolute inset-0">
-                            {/* 左側相框：向左微傾，有漂浮動畫 */}
+                            {/* 左側相框：向左微傾，有漂浮動畫 - 置頂 (top-24) */}
                             <div 
-                                className="absolute left-[5%] top-1/2 -translate-y-1/2 w-[35vw] h-[60vh] bg-white/40 backdrop-blur-md border border-white/60 p-3 shadow-2xl rounded-2xl transform transition-all duration-700 ease-in-out hover:rotate-0 hover:scale-105 hover:z-10 animate-gentle-float"
-                                style={{ '--rot': '-4deg' }} // 自訂 CSS 變數控制旋轉
+                                className="absolute left-[2%] top-24 w-[35vw] h-[60vh] bg-white/40 backdrop-blur-md border border-white/60 p-3 shadow-2xl rounded-2xl transform transition-all duration-700 ease-in-out hover:rotate-0 hover:scale-105 hover:z-10 animate-gentle-float"
+                                style={{ '--rot': '-4deg' }} 
                             >
                                 <div className="w-full h-full bg-white/80 rounded-xl overflow-hidden shadow-inner flex items-center justify-center relative">
                                     <img 
@@ -483,10 +483,10 @@
                                 </div>
                             </div>
 
-                            {/* 右側相框：向右微傾，有漂浮動畫 */}
+                            {/* 右側相框：向右微傾，有漂浮動畫 - 置頂 (top-24) */}
                             <div 
-                                className="absolute right-[5%] top-1/2 -translate-y-1/2 w-[35vw] h-[60vh] bg-white/40 backdrop-blur-md border border-white/60 p-3 shadow-2xl rounded-2xl transform transition-all duration-700 ease-in-out hover:rotate-0 hover:scale-105 hover:z-10 animate-gentle-float"
-                                style={{ '--rot': '4deg', animationDelay: '1s' }} // 延遲動畫，讓左右浮動不同步
+                                className="absolute right-[2%] top-24 w-[35vw] h-[60vh] bg-white/40 backdrop-blur-md border border-white/60 p-3 shadow-2xl rounded-2xl transform transition-all duration-700 ease-in-out hover:rotate-0 hover:scale-105 hover:z-10 animate-gentle-float"
+                                style={{ '--rot': '4deg', animationDelay: '1s' }} 
                             >
                                 <div className="w-full h-full bg-white/80 rounded-xl overflow-hidden shadow-inner flex items-center justify-center relative">
                                     <img 
@@ -599,7 +599,7 @@
                     {/* Log Area */}
                     <div className="fixed bottom-0 left-0 w-full bg-white/95 border-t border-pink-200 p-3 h-36 font-mono text-sm shadow-[0_-4px_20px_rgba(0,0,0,0.05)] z-40 backdrop-blur-md">
                         <div className="text-pink-400 text-xs mb-2 flex justify-between px-2">
-                            <span>♥ LOVE LOG // v4.3</span>
+                            <span>♥ LOVE LOG // v4.4</span>
                             <span className="animate-pulse text-rose-500">● LIVE</span>
                         </div>
                         <div className="overflow-y-auto h-24 flex flex-col space-y-1 scroll-smooth px-2">
