@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🔒 LOCKED MEMORY - MISSION 2026</title>
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <title>💖 LOVE MEMORY - MISSION 2026</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -14,35 +14,25 @@
         
         body { 
             font-family: 'Noto Sans TC', sans-serif; 
-            background-color: #020617;
-            color: #e2e8f0;
+            background-color: #fff1f2; /* Rose-50 */
+            color: #881337; /* Rose-900 */
             overflow-x: hidden;
         }
         .mono-font { font-family: 'Share Tech Mono', monospace; }
         
-        .scan-line {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: rgba(16, 185, 129, 0.5);
-            animation: scan 3s linear infinite;
-            z-index: 5;
+        /* 愛心飄浮動畫 */
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(0.5) rotate(0deg); opacity: 0; }
+            20% { opacity: 0.8; }
+            100% { transform: translateY(-120vh) scale(1.5) rotate(360deg); opacity: 0; }
+        }
+        
+        .floating-heart {
+            position: fixed;
+            bottom: -50px;
             pointer-events: none;
-        }
-        @keyframes scan {
-            0% { top: 0%; opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { top: 100%; opacity: 0; }
-        }
-
-        .glitch-effect { animation: glitch 1s linear infinite; }
-        @keyframes glitch {
-            2%, 64% { transform: translate(2px,0) skew(0deg); }
-            4%, 60% { transform: translate(-2px,0) skew(0deg); }
-            62% { transform: translate(0,0) skew(5deg); }
+            z-index: 1;
+            animation: floatUp linear infinite;
         }
 
         .shake { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
@@ -56,9 +46,10 @@
         .fade-in { animation: fadeIn 0.8s ease-in; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
+        /* 浪漫捲軸 */
         ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #0f172a; }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-track { background: #fff1f2; }
+        ::-webkit-scrollbar-thumb { background: #f43f5e; border-radius: 4px; }
     </style>
 </head>
 <body>
@@ -72,7 +63,7 @@
         // ==========================================
         const GAME_DATA = {
             agentName: "驊容小寶貝", 
-            missionCode: "VALENTINE-2026",
+            missionCode: "LOVE-2026",
             finalMessage: "系統解鎖成功！\n\n其實這個遊戲的終點不是寶藏，而是我們一起走過的路。\n情人節快樂，我的最愛大傻B！❤️",
             locations: [
                 {
@@ -137,7 +128,7 @@
                     bgImage: "images/level5.jpg",
                     description: "下船後有很多人，我們站在一起，手裡拿著一顆熱騰騰的蛋。",
                     searchPoints: [
-                        { name: "看看這店", content: "茶葉店老闆娘的愛情故事真有愛呢" }, // 👈 之前這裡少了一個逗號
+                        { name: "看看這店", content: "茶葉店老闆娘的愛情故事真有愛呢" },
                         { name: "吃一口蛋", content: "線索發現！\n這顆蛋不太好吃，沒有預期的香菇和紅茶味道。\n是誰賣的茶葉蛋？(兩個字)" },
                         { name: "看船票", content: "票上寫著「水社碼頭」。" }
                     ],
@@ -227,8 +218,49 @@
         };
 
         // ==========================================
-        // 🛠️ 系統組件 (v2.3 修正版) 🛠️
+        // 🛠️ 系統組件 (v4.0 浪漫粉紅版) 🛠️
         // ==========================================
+
+        // 愛心特效組件
+        const FloatingHearts = () => {
+            const [hearts, setHearts] = useState([]);
+
+            useEffect(() => {
+                const interval = setInterval(() => {
+                    const id = Date.now();
+                    const left = Math.random() < 0.5 ? Math.random() * 20 : 80 + Math.random() * 20; // 只在左右兩側生成
+                    const duration = 5 + Math.random() * 5;
+                    const size = 10 + Math.random() * 20;
+                    
+                    setHearts(prev => [...prev, { id, left, duration, size }]);
+
+                    // 清理舊愛心
+                    setTimeout(() => {
+                        setHearts(prev => prev.filter(h => h.id !== id));
+                    }, duration * 1000);
+                }, 800); // 產生頻率
+
+                return () => clearInterval(interval);
+            }, []);
+
+            return (
+                <>
+                    {hearts.map(h => (
+                        <div 
+                            key={h.id}
+                            className="floating-heart text-pink-400"
+                            style={{ 
+                                left: `${h.left}%`, 
+                                animationDuration: `${h.duration}s`,
+                                fontSize: `${h.size}px`
+                            }}
+                        >
+                            ❤️
+                        </div>
+                    ))}
+                </>
+            );
+        };
 
         class ErrorBoundary extends React.Component {
             constructor(props) {
@@ -239,13 +271,13 @@
             render() {
                 if (this.state.hasError) {
                     return (
-                        <div className="h-screen bg-slate-900 text-red-500 flex flex-col items-center justify-center p-6">
-                            <h2 className="text-2xl font-bold mb-4">SYSTEM ERROR</h2>
-                            <pre className="bg-black p-4 rounded text-sm overflow-auto max-w-full">
+                        <div className="h-screen bg-pink-50 text-red-500 flex flex-col items-center justify-center p-6">
+                            <h2 className="text-2xl font-bold mb-4">糟糕，愛心過載了！</h2>
+                            <pre className="bg-white p-4 rounded text-sm overflow-auto max-w-full border border-pink-200 shadow">
                                 {this.state.error ? this.state.error.toString() : "Unknown Error"}
                             </pre>
-                            <button onClick={() => window.location.reload()} className="mt-6 px-6 py-2 bg-red-600 text-white rounded">
-                                REBOOT SYSTEM
+                            <button onClick={() => window.location.reload()} className="mt-6 px-6 py-2 bg-pink-500 text-white rounded-full hover:bg-pink-600 transition">
+                                重新整理
                             </button>
                         </div>
                     );
@@ -281,12 +313,12 @@
                         setDisplay(text.substring(0, i + 1));
                         i++;
                         if (i === text.length) clearInterval(interval);
-                    }, 30);
+                    }, 50);
                     return () => clearInterval(interval);
                 }, delay);
                 return () => clearTimeout(timer);
             }, [text, delay]);
-            return <div className="font-mono text-green-400 mb-2 text-lg">> {display}<span className="animate-pulse">_</span></div>;
+            return <div className="font-mono text-pink-600 mb-2 text-lg text-shadow-sm">♥ {display}<span className="animate-pulse">_</span></div>;
         };
 
         const GameContent = () => {
@@ -310,20 +342,20 @@
             const currentLevel = GAME_DATA.locations[currentLevelIndex];
 
             const addLog = (msg, type = 'info') => {
-                const colors = { info: 'text-gray-300', warn: 'text-yellow-400', error: 'text-red-400', success: 'text-green-400' };
+                const colors = { info: 'text-pink-700', warn: 'text-purple-600', error: 'text-red-500', success: 'text-rose-600' };
                 setLogs(prev => [...prev, { time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}), msg, color: colors[type] }]);
             };
 
             const handleSearch = (point) => {
-                addLog(`正在分析: ${point.name}...`, 'info');
+                addLog(`正在查看: ${point.name}...`, 'info');
                 setTimeout(() => {
                     if (point.content.includes("線索發現")) {
                         setFoundClue(point.content);
                         setGameState('solving');
-                        addLog("⚠️ 警告：偵測到加密數據！", 'warn');
+                        addLog("✨ 發現重要回憶！", 'warn');
                         if (navigator.vibrate) navigator.vibrate(200);
                     } else {
-                        addLog(`分析結果: ${point.content}`, 'info');
+                        addLog(`回憶片段: ${point.content}`, 'info');
                     }
                 }, 600);
             };
@@ -333,10 +365,10 @@
                 const cleanInput = inputAnswer.trim().toLowerCase().replace(/\s/g, '');
                 const cleanAnswer = currentLevel.answer.toLowerCase().replace(/\s/g, '');
 
-                addLog(`驗證密碼: ${inputAnswer}...`, 'info');
+                addLog(`心靈感應中: ${inputAnswer}...`, 'info');
 
                 if (cleanInput === cleanAnswer || cleanInput.includes(cleanAnswer)) {
-                    addLog("密碼正確。存取權限已授權。", 'success');
+                    addLog("回答正確！愛心解鎖成功 ❤️", 'success');
                     setGameState('unlocked');
                     if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
                     setTimeout(() => {
@@ -351,7 +383,7 @@
                     }, 2500);
                 } else {
                     setErrorMsg('小傻B'); 
-                    addLog("錯誤：密碼不符。", 'error');
+                    addLog("錯誤：不是這個喔～", 'error');
                     setIsShaking(true);
                     setInputAnswer('');
                     if (navigator.vibrate) navigator.vibrate(500);
@@ -359,43 +391,47 @@
                 }
             };
 
-            // 1. Boot Screen
+            // 1. Boot Screen (Pink Theme)
             if (gameState === 'boot') {
                 return (
-                    <div className="h-screen bg-black flex flex-col items-center justify-center font-mono text-green-500 p-6 relative">
-                        <div className="w-full max-w-md">
-                            <TerminalLine text="INITIALIZING SYSTEM v2.3..." delay={0} />
-                            <TerminalLine text="LOADING MEMORY MODULES..." delay={1000} />
-                            <TerminalLine text={`TARGET: ${GAME_DATA.agentName}`} delay={2000} />
-                            <TerminalLine text="ENCRYPTING CONNECTION..." delay={3000} />
+                    <div className="h-screen bg-pink-50 flex flex-col items-center justify-center font-mono text-pink-600 p-6 relative">
+                        <FloatingHearts />
+                        <div className="w-full max-w-md bg-white/50 backdrop-blur-sm p-8 rounded-2xl shadow-lg border border-pink-200">
+                            <TerminalLine text="正在載入甜蜜回憶..." delay={0} />
+                            <TerminalLine text="同步愛心頻率中..." delay={1000} />
+                            <TerminalLine text={`目標對象: ${GAME_DATA.agentName}`} delay={2000} />
+                            <TerminalLine text="準備開啟戀愛冒險..." delay={3000} />
                         </div>
+                        <div className="absolute bottom-4 right-4 text-xs text-pink-400">Love System v4.0</div>
                     </div>
                 );
             }
 
-            // 2. Start Screen
+            // 2. Start Screen (Pink Theme)
             if (gameState === 'locked') {
                 return (
-                    <div className="h-screen bg-slate-900 flex flex-col items-center justify-center p-6 relative overflow-hidden">
-                        <div className="scan-line"></div>
+                    <div className="h-screen bg-rose-50 flex flex-col items-center justify-center p-6 relative overflow-hidden">
+                        <FloatingHearts />
                         <div className="z-10 text-center space-y-8 max-w-lg w-full">
                             <div className="flex justify-center mb-6">
                                 <div className="relative">
-                                    <div className="absolute inset-0 bg-blue-500 blur-xl opacity-20 animate-pulse"></div>
-                                    <Icon name="lock" className="w-28 h-28 text-blue-400" />
+                                    <div className="absolute inset-0 bg-pink-400 blur-3xl opacity-30 animate-pulse"></div>
+                                    <div className="bg-white p-6 rounded-full shadow-xl border-4 border-pink-100">
+                                        <Icon name="lock" className="w-20 h-20 text-pink-500" />
+                                    </div>
                                 </div>
                             </div>
                             <div>
-                                <h1 className="text-5xl font-bold text-white mb-2 tracking-widest glitch-effect">LOCKED</h1>
-                                <p className="text-blue-300 mono-font text-base tracking-widest">MISSION: {GAME_DATA.missionCode}</p>
+                                <h1 className="text-5xl font-bold text-rose-900 mb-2 tracking-widest drop-shadow-sm">LOCKED MEMORY</h1>
+                                <p className="text-rose-400 mono-font text-base tracking-widest bg-white/60 inline-block px-4 py-1 rounded-full">MISSION: {GAME_DATA.missionCode}</p>
                             </div>
-                            <div className="bg-slate-800/80 border border-slate-600 p-8 rounded-xl backdrop-blur-sm text-left shadow-2xl">
-                                <p className="text-gray-200 mb-6 leading-relaxed text-lg">
-                                    探員 <strong className="text-blue-400">{GAME_DATA.agentName}</strong>，系統偵測到大量加密的回憶檔案。
-                                    為了取回數據，我們需要你在這些地點尋找線索，解開安全鎖。
+                            <div className="bg-white/70 border border-pink-200 p-8 rounded-2xl backdrop-blur-md text-left shadow-xl hover:shadow-2xl transition-shadow">
+                                <p className="text-rose-800 mb-6 leading-relaxed text-lg">
+                                    親愛的 <strong className="text-pink-600">{GAME_DATA.agentName}</strong>，系統偵測到大量我們珍貴的回憶檔案。
+                                    為了找回這些甜蜜時光，我們需要你在這些地點尋找線索，解開愛的密碼。
                                 </p>
-                                <button onClick={() => setGameState('searching')} className="w-full bg-blue-600 hover:bg-blue-500 text-white font-mono text-xl py-4 rounded-lg shadow-[0_0_20px_rgba(37,99,235,0.4)] font-bold tracking-wider cursor-pointer">
-                                    [ 開始任務 / START ]
+                                <button onClick={() => setGameState('searching')} className="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-mono text-xl py-4 rounded-xl shadow-lg shadow-pink-300/50 font-bold tracking-wider cursor-pointer transform hover:-translate-y-1 transition-all">
+                                    [ 開始愛的冒險 ]
                                 </button>
                             </div>
                         </div>
@@ -403,98 +439,101 @@
                 );
             }
 
-            // 5. Victory Screen
+            // 5. Victory Screen (Pink Theme)
             if (gameState === 'victory') {
                 return (
-                    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex flex-col items-center justify-center p-6 text-center">
-                        <div className="mb-8 relative">
-                            <div className="absolute inset-0 bg-pink-500 blur-3xl opacity-30 animate-pulse"></div>
-                            <Icon name="heart" className="w-32 h-32 text-pink-500 relative z-10 fill-pink-500/20" />
+                    <div className="min-h-screen bg-gradient-to-br from-pink-100 via-rose-200 to-pink-100 flex flex-col items-center justify-center p-6 text-center">
+                        <FloatingHearts />
+                        <div className="mb-8 relative animate-bounce">
+                            <div className="absolute inset-0 bg-red-500 blur-3xl opacity-20"></div>
+                            <Icon name="heart" className="w-40 h-40 text-rose-500 fill-rose-500 drop-shadow-xl" />
                         </div>
-                        <div className="bg-white/10 backdrop-blur-md border border-white/20 p-8 rounded-2xl max-w-lg w-full shadow-2xl fade-in">
-                            <h2 className="text-4xl font-bold text-white mb-6">MISSION COMPLETE</h2>
-                            <div className="text-gray-100 text-xl whitespace-pre-line leading-relaxed mb-8">{GAME_DATA.finalMessage}</div>
-                            <div className="border-t border-white/10 pt-6">
-                                <p className="text-sm text-pink-300 mono-font mb-2">REWARD CODE:</p>
-                                <div className="text-3xl font-mono font-bold text-white tracking-[0.2em] select-all bg-black/30 p-4 rounded-lg border border-pink-500/30">FOREVER-US</div>
+                        <div className="bg-white/80 backdrop-blur-md border border-pink-200 p-8 rounded-3xl max-w-lg w-full shadow-2xl fade-in">
+                            <h2 className="text-4xl font-bold text-rose-600 mb-6">MISSION COMPLETE!</h2>
+                            <div className="text-rose-800 text-xl whitespace-pre-line leading-relaxed mb-8 font-medium">{GAME_DATA.finalMessage}</div>
+                            <div className="border-t border-pink-100 pt-6">
+                                <p className="text-sm text-rose-400 mono-font mb-2">專屬獎勵代碼:</p>
+                                <div className="text-3xl font-mono font-bold text-rose-600 tracking-[0.2em] select-all bg-pink-50 p-4 rounded-xl border border-pink-200 dashed">FOREVER-US</div>
                             </div>
                         </div>
                     </div>
                 );
             }
 
-            // 3 & 4. Gameplay (Searching & Solving)
+            // 3 & 4. Gameplay (Pink Theme)
             return (
-                <div className="min-h-screen bg-slate-950 text-gray-200 flex flex-col relative pb-40">
-                    <div className="scan-line opacity-30"></div>
-
-                    {/* 👇👇👇 背景圖片層 👇👇👇 */}
+                <div className="min-h-screen bg-rose-50 text-rose-900 flex flex-col relative pb-40">
+                    {/* 背景圖片層 - 清晰化 */}
                     <div className="fixed inset-0 z-0">
-                        <div className="absolute inset-0 bg-slate-900"></div>
+                        <div className="absolute inset-0 bg-pink-50"></div>
                         <img 
                             key={currentLevel.bgImage} 
                             src={currentLevel.bgImage} 
-                            className="w-full h-full object-cover opacity-100 transition-opacity duration-1000 ease-in-out"
+                            className="w-full h-full object-cover opacity-100 transition-opacity duration-1000 ease-in-out" 
                             alt="background"
                             onError={(e) => e.target.style.display = 'none'} 
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/40 to-slate-900/20"></div>
+                        {/* 淺色漸層，讓下方文字清楚，但不遮擋圖片 */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-white/90 via-white/40 to-transparent"></div>
                     </div>
                     
+                    <FloatingHearts />
+
                     {/* Header */}
-                    <div className="bg-slate-900/90 backdrop-blur border-b border-slate-800 p-4 flex justify-between items-center sticky top-0 z-30 shadow-lg">
+                    <div className="bg-white/80 backdrop-blur-md border-b border-pink-100 p-4 flex justify-between items-center sticky top-0 z-30 shadow-sm">
                         <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 bg-blue-900/40 rounded-lg flex items-center justify-center border border-blue-500/30">
-                                <Icon name={currentLevel.icon} className="text-blue-400 w-6 h-6" />
+                            <div className="w-12 h-12 bg-pink-100 rounded-xl flex items-center justify-center border border-pink-200 shadow-sm">
+                                <Icon name={currentLevel.icon} className="text-pink-500 w-6 h-6" />
                             </div>
                             <div>
-                                <div className="text-xs text-blue-400 mono-font">LOCATION_ID: {currentLevel.id.toString().padStart(3, '0')}</div>
-                                <div className="font-bold text-xl text-gray-100">{currentLevel.name}</div>
+                                <div className="text-xs text-pink-400 mono-font">LOC_ID: {currentLevel.id.toString().padStart(3, '0')}</div>
+                                <div className="font-bold text-xl text-rose-800">{currentLevel.name}</div>
                             </div>
                         </div>
                         <div className="flex flex-col items-end">
-                            <div className="mono-font text-xs text-gray-500">SECURITY LEVEL</div>
-                            <div className="text-green-400 font-mono font-bold text-lg">{Math.round(((currentLevelIndex) / GAME_DATA.locations.length) * 100)}%</div>
+                            <div className="mono-font text-xs text-pink-400">LOVE LEVEL</div>
+                            <div className="text-rose-500 font-mono font-bold text-lg">{Math.round(((currentLevelIndex) / GAME_DATA.locations.length) * 100)}%</div>
                         </div>
                     </div>
 
                     <main className="flex-1 p-6 max-w-2xl mx-auto w-full flex flex-col gap-6 z-10">
-                        <div className="bg-slate-900/60 p-6 rounded-xl border-l-4 border-blue-500 relative overflow-hidden shadow-lg backdrop-blur-sm">
-                            <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
-                                <Icon name={currentLevel.icon} className="w-40 h-40" />
+                        {/* 描述框 */}
+                        <div className="bg-white/80 p-6 rounded-2xl border border-pink-100 relative overflow-hidden shadow-lg backdrop-blur-md">
+                            <div className="absolute top-0 right-0 p-4 opacity-10 pointer-events-none">
+                                <Icon name={currentLevel.icon} className="w-40 h-40 text-pink-500" />
                             </div>
-                            <h3 className="text-blue-400 font-bold mb-3 text-sm mono-font tracking-wider flex items-center gap-2">
-                                <Icon name="terminal" className="w-4 h-4" /> SCENE DESCRIPTION
+                            <h3 className="text-pink-500 font-bold mb-3 text-sm mono-font tracking-wider flex items-center gap-2">
+                                <Icon name="map" className="w-4 h-4" /> SCENE DESCRIPTION
                             </h3>
-                            <p className="text-xl leading-relaxed text-gray-100 relative z-10">{currentLevel.description}</p>
+                            <p className="text-xl leading-relaxed text-rose-900 font-medium relative z-10">{currentLevel.description}</p>
                         </div>
 
                         {gameState === 'searching' ? (
                             <div className="space-y-4 fade-in">
-                                <div className="text-sm text-gray-400 mono-font mb-2 text-center bg-slate-800/50 py-1 rounded">--- SELECT TARGET / 選擇調查區域 ---</div>
+                                <div className="text-sm text-rose-400 mono-font mb-2 text-center bg-white/60 py-1 rounded-full backdrop-blur-sm">--- 請選擇調查區域 ---</div>
                                 <div className="grid grid-cols-1 gap-4">
                                     {currentLevel.searchPoints.map((point, idx) => (
-                                        <button key={idx} onClick={() => handleSearch(point)} className="group bg-slate-800/90 hover:bg-slate-700/90 border border-slate-700 hover:border-blue-400 p-5 rounded-xl text-left transition-all flex items-center justify-between shadow-md active:scale-[0.98]">
-                                            <span className="flex items-center gap-4 text-lg">
-                                                <div className="bg-slate-900 p-2 rounded-full group-hover:bg-blue-900/50 transition-colors">
-                                                    <Icon name="search" className="w-5 h-5 text-gray-400 group-hover:text-blue-400" />
+                                        <button key={idx} onClick={() => handleSearch(point)} className="group bg-white/90 hover:bg-pink-50 border border-pink-200 hover:border-pink-400 p-5 rounded-2xl text-left transition-all flex items-center justify-between shadow-md hover:shadow-lg active:scale-[0.98]">
+                                            <span className="flex items-center gap-4 text-lg font-medium text-rose-800">
+                                                <div className="bg-pink-100 p-2 rounded-full group-hover:bg-pink-200 transition-colors text-pink-500">
+                                                    <Icon name="search" className="w-5 h-5" />
                                                 </div>
                                                 {point.name}
                                             </span>
-                                            <Icon name="chevron-right" className="w-5 h-5 text-gray-600 group-hover:translate-x-1 transition-transform" />
+                                            <Icon name="chevron-right" className="w-5 h-5 text-pink-300 group-hover:text-pink-500 group-hover:translate-x-1 transition-transform" />
                                         </button>
                                     ))}
                                 </div>
                             </div>
                         ) : gameState === 'solving' ? (
-                            <div className="fade-in bg-black/60 border border-green-500/40 p-6 rounded-xl shadow-[0_0_30px_rgba(16,185,129,0.15)] backdrop-blur-md">
-                                <div className="flex items-start gap-4 mb-8 bg-green-900/20 p-4 rounded-lg border border-green-500/20">
-                                    <div className="bg-green-500/20 p-3 rounded-full animate-pulse shrink-0">
-                                        <Icon name="key" className="w-6 h-6 text-green-400" />
+                            <div className="fade-in bg-white/90 border border-pink-300 p-6 rounded-2xl shadow-xl backdrop-blur-md">
+                                <div className="flex items-start gap-4 mb-8 bg-pink-50 p-4 rounded-xl border border-pink-100">
+                                    <div className="bg-pink-200 p-3 rounded-full animate-pulse shrink-0">
+                                        <Icon name="key" className="w-6 h-6 text-pink-600" />
                                     </div>
                                     <div className="flex-1">
-                                        <h3 className="text-green-400 font-mono text-sm mb-2 font-bold">DATA DECRYPTED // 線索解密</h3>
-                                        <p className="text-white whitespace-pre-line font-medium leading-relaxed text-lg">{foundClue}</p>
+                                        <h3 className="text-pink-500 font-mono text-sm mb-2 font-bold">✨ SECRET FOUND // 線索</h3>
+                                        <p className="text-rose-900 whitespace-pre-line font-bold leading-relaxed text-lg">{foundClue}</p>
                                     </div>
                                 </div>
 
@@ -504,51 +543,52 @@
                                             type="text" 
                                             value={inputAnswer}
                                             onChange={(e) => setInputAnswer(e.target.value)}
-                                            placeholder="ENTER PASSCODE..."
-                                            className={`w-full bg-slate-900 border-2 ${errorMsg ? 'border-red-500' : 'border-slate-600 focus:border-green-500'} text-green-500 font-mono text-2xl py-6 px-4 rounded-lg outline-none text-center tracking-widest uppercase transition-all shadow-inner placeholder:text-slate-700 ${isShaking ? 'shake' : ''}`}
+                                            placeholder="請輸入愛的密碼..."
+                                            className={`w-full bg-white border-2 ${errorMsg ? 'border-red-400' : 'border-pink-200 focus:border-pink-500'} text-rose-600 font-mono text-2xl py-6 px-4 rounded-xl outline-none text-center tracking-widest placeholder:text-pink-200 placeholder:text-lg shadow-inner transition-all ${isShaking ? 'shake' : ''}`}
                                             autoFocus
                                             autoComplete="off"
                                         />
                                         {errorMsg && (
-                                            <div className="absolute top-full left-0 w-full text-center text-red-400 font-bold text-lg mt-2 animate-bounce">
+                                            <div className="absolute top-full left-0 w-full text-center text-red-500 font-bold text-lg mt-2 animate-bounce bg-white/80 rounded py-1">
                                                 {errorMsg}
                                             </div>
                                         )}
                                     </div>
-                                    <button className="w-full bg-green-600 hover:bg-green-500 text-black font-bold text-xl py-4 rounded-lg uppercase tracking-wider transition-all shadow-[0_4px_14px_rgba(74,222,128,0.4)] hover:shadow-[0_6px_20px_rgba(74,222,128,0.6)] hover:-translate-y-1 active:translate-y-0">
-                                        UNLOCK / 解鎖
+                                    <button className="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold text-xl py-4 rounded-xl uppercase tracking-wider transition-all shadow-lg hover:shadow-pink-300/50 hover:-translate-y-1 active:translate-y-0">
+                                        UNLOCK / 解鎖回憶
                                     </button>
                                     <div className="text-center pt-2">
-                                        <button type="button" className="text-sm text-slate-500 hover:text-blue-400 mono-font underline decoration-dotted transition-colors p-2" onClick={() => alert(currentLevel.hint)}>
-                                            [ REQUEST HINT / 提示 ]
+                                        <button type="button" className="text-sm text-pink-400 hover:text-pink-600 mono-font underline decoration-dotted transition-colors p-2" onClick={() => alert(currentLevel.hint)}>
+                                            [ 偷偷看提示 ]
                                         </button>
                                     </div>
                                 </form>
                             </div>
                         ) : (
-                            <div className="flex flex-col items-center justify-center py-12 animate-pulse text-green-400 transform scale-110 transition-transform duration-500">
-                                <div className="p-6 rounded-full bg-green-500/20 mb-6 shadow-[0_0_50px_rgba(74,222,128,0.5)]">
+                            <div className="flex flex-col items-center justify-center py-12 animate-pulse text-pink-500 transform scale-110 transition-transform duration-500">
+                                <div className="p-6 rounded-full bg-pink-100 mb-6 shadow-xl border-4 border-white">
                                     <Icon name="unlock" className="w-24 h-24" />
                                 </div>
-                                <div className="mono-font text-3xl font-bold tracking-widest text-white drop-shadow-[0_0_10px_rgba(74,222,128,0.8)]">ACCESS GRANTED</div>
-                                <div className="text-green-600 mt-2 font-mono">Redirecting to next sector...</div>
+                                <div className="mono-font text-3xl font-bold tracking-widest text-white drop-shadow-md text-stroke">ACCESS GRANTED</div>
+                                <div className="text-white mt-2 font-bold drop-shadow-md">前往下一段回憶...</div>
                             </div>
                         )}
                     </main>
 
-                    <div className="fixed bottom-0 left-0 w-full bg-black/95 border-t-2 border-slate-800 p-3 h-36 font-mono text-sm shadow-2xl z-40 backdrop-blur">
-                        <div className="text-slate-500 text-xs mb-2 flex justify-between">
-                            <span>SYSTEM LOG // v2.3</span>
-                            <span className="animate-pulse text-green-500">● LIVE</span>
+                    {/* Log Area */}
+                    <div className="fixed bottom-0 left-0 w-full bg-white/95 border-t border-pink-200 p-3 h-36 font-mono text-sm shadow-[0_-4px_20px_rgba(0,0,0,0.05)] z-40 backdrop-blur-md">
+                        <div className="text-pink-400 text-xs mb-2 flex justify-between px-2">
+                            <span>♥ LOVE LOG // v4.0</span>
+                            <span className="animate-pulse text-rose-500">● LIVE</span>
                         </div>
-                        <div className="overflow-y-auto h-24 flex flex-col space-y-1 scroll-smooth">
+                        <div className="overflow-y-auto h-24 flex flex-col space-y-1 scroll-smooth px-2">
                             {logs.map((log, i) => (
-                                <div key={i} className={`${log.color} break-words`}>
-                                    <span className="opacity-50">[{log.time}]</span> {log.msg}
+                                <div key={i} className={`${log.color} break-words font-medium`}>
+                                    <span className="opacity-50 text-xs">[{log.time}]</span> {log.msg}
                                 </div>
                             ))}
                             <div ref={logsEndRef} />
-                            {logs.length === 0 && <span className="text-gray-700 italic">> Waiting for user input...</span>}
+                            {logs.length === 0 && <span className="text-pink-300 italic">> 等待輸入中...</span>}
                         </div>
                     </div>
                 </div>
