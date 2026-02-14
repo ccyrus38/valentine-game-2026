@@ -70,6 +70,29 @@
                 inset 0 0 20px rgba(255, 255, 255, 0.5); /* 內發光模擬泡泡 */
             border-radius: 2rem;
         }
+
+        /* ✨ 閃亮亮錯誤特效 (新) ✨ */
+        @keyframes sparkleText {
+            0%, 100% { 
+                text-shadow: 0 0 10px #ff00de, 0 0 20px #ff00de; 
+                transform: scale(1) rotate(-3deg); 
+            }
+            50% { 
+                text-shadow: 0 0 30px #ff00de, 0 0 40px #ff99cc, 0 0 50px #fff; 
+                transform: scale(1.3) rotate(3deg); 
+            }
+        }
+        .sparkle-error {
+            animation: sparkleText 0.4s infinite; /* 快速閃爍 */
+            background: linear-gradient(to bottom, #ff0055, #ff00cc);
+            -webkit-background-clip: text;
+            /* color: transparent; 取消透明，讓顏色更實 */
+            color: #d6006c; 
+            font-weight: 900;
+            filter: drop-shadow(0 4px 4px rgba(255,255,255,0.8));
+            width: 100%;
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -238,7 +261,7 @@
         };
 
         // ==========================================
-        // 🛠️ 系統組件 (v6.0 夢幻泡泡版) 🛠️
+        // 🛠️ 系統組件 (v6.1 閃亮小傻B修正版) 🛠️
         // ==========================================
 
         const FloatingBubbles = () => {
@@ -391,12 +414,13 @@
                         }
                     }, 2500);
                 } else {
-                    setErrorMsg('小傻B'); 
+                    // 👇👇👇 修改點：閃亮亮小傻B + 恥笑Emoji + 3秒延遲 👇👇👇
+                    setErrorMsg('🤭 小傻B 🤪'); 
                     addLog("錯誤：不是這個喔～", 'error');
                     setIsShaking(true);
                     setInputAnswer('');
                     if (navigator.vibrate) navigator.vibrate(500);
-                    setTimeout(() => { setErrorMsg(''); setIsShaking(false); }, 1500);
+                    setTimeout(() => { setErrorMsg(''); setIsShaking(false); }, 3000); // 延長到 3 秒
                 }
             };
 
@@ -427,204 +451,457 @@
                                 </div>
                             </div>
                             <div>
-                                <h1 className="text-4xl font-bold text-rose-800 mb-2 tracking-widest drop-shadow-sm">LOCKED MEMORY</h1>
-                                <p className="text-rose-400 mono-font text-sm tracking-widest bg-white/30 inline-block px-4 py-1 rounded-full border border-white/40">MISSION: {GAME_DATA.missionCode}</p>
-                            </div>
-                            <div className="bubble-box p-8 text-left shadow-[0_10px_40px_rgba(255,200,200,0.3)] bg-gradient-to-b from-white/40 to-white/10">
-                                <p className="text-rose-800 mb-6 leading-relaxed text-lg font-medium">
-                                    親愛的 <strong className="text-pink-600">{GAME_DATA.agentName}</strong>，系統偵測到大量我們珍貴的回憶檔案。
-                                    請解開愛的密碼。
-                                </p>
-                                <button onClick={() => setGameState('searching')} className="w-full bg-white/40 hover:bg-white/60 border border-white/60 text-rose-600 font-bold text-xl py-4 rounded-full shadow-lg hover:shadow-xl transition-all active:scale-95">
-                                    [ 開始愛的冒險 ]
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                );
-            }
+                                <h1 className="text-4xl font<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>💖 LOVE MEMORY - MISSION 2026</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Noto+Sans+TC:wght@400;500;700&display=swap');
+        
+        body { 
+            font-family: 'Noto Sans TC', sans-serif; 
+            background-color: #fff0f5; /* LavenderBlush */
+            color: #881337; 
+            overflow-x: hidden;
+        }
+        .mono-font { font-family: 'Share Tech Mono', monospace; }
+        
+        /* 漂浮動畫 (更輕盈) */
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) scale(0.5) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(-10vh) scale(1.2) rotate(360deg); opacity: 0; }
+        }
+        
+        .floating-item {
+            position: fixed;
+            pointer-events: none;
+            z-index: 0;
+            animation: floatUp linear infinite;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+        }
 
-            // 5. Victory Screen
-            if (gameState === 'victory') {
-                return (
-                    <div className="h-screen bg-pink-50 flex flex-col items-center justify-center p-6 text-center">
-                        <FloatingBubbles />
-                        <div className="mb-8 relative animate-bounce">
-                            <Icon name="heart" className="w-40 h-40 text-rose-500 fill-rose-500 drop-shadow-xl" />
-                        </div>
-                        <div className="bubble-box p-8 shadow-2xl bg-white/40 border-white/60">
-                            <h2 className="text-3xl font-bold text-rose-600 mb-4">MISSION COMPLETE!</h2>
-                            <div className="text-rose-800 text-lg whitespace-pre-line leading-relaxed mb-6 font-medium">{GAME_DATA.finalMessage}</div>
-                            <div className="border-t border-white/40 pt-4">
-                                <p className="text-sm text-rose-400 mono-font mb-2">專屬獎勵代碼:</p>
-                                <div className="text-2xl font-mono font-bold text-rose-600 tracking-[0.2em] select-all bg-white/30 p-3 rounded-2xl border border-white/50 dashed">FOREVER-US</div>
-                            </div>
-                        </div>
-                    </div>
-                );
-            }
+        .shake { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
 
-            // 3 & 4. Gameplay (Transparent Bubble Frames)
+        .fade-in { animation: fadeIn 0.8s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 相框漂浮 */
+        @keyframes gentleFloat {
+            0%, 100% { transform: translateY(0) rotate(var(--rot)); }
+            50% { transform: translateY(-10px) rotate(var(--rot)); }
+        }
+        .animate-gentle-float {
+            animation: gentleFloat 6s ease-in-out infinite;
+        }
+
+        /* 隱藏捲軸但保留功能 */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* 泡泡框特效 */
+        .bubble-box {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.1));
+            backdrop-filter: blur(3px); /* 降低模糊度，更透亮 */
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 
+                0 4px 30px rgba(0, 0, 0, 0.05),
+                inset 0 0 20px rgba(255, 255, 255, 0.5); /* 內發光模擬泡泡 */
+            border-radius: 2rem;
+        }
+
+        /* ✨ 閃亮亮錯誤特效 (新) ✨ */
+        @keyframes sparkleText {
+            0%, 100% { 
+                text-shadow: 0 0 10px #ff00de, 0 0 20px #ff00de; 
+                transform: scale(1) rotate(-3deg); 
+            }
+            50% { 
+                text-shadow: 0 0 30px #ff00de, 0 0 40px #ff99cc, 0 0 50px #fff; 
+                transform: scale(1.3) rotate(3deg); 
+            }
+        }
+        .sparkle-error {
+            animation: sparkleText 0.4s infinite; /* 快速閃爍 */
+            background: linear-gradient(to bottom, #ff0055, #ff00cc);
+            -webkit-background-clip: text;
+            /* color: transparent; 取消透明，讓顏色更實 */
+            color: #d6006c; 
+            font-weight: 900;
+            filter: drop-shadow(0 4px 4px rgba(255,255,255,0.8));
+            width: 100%;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // ==========================================
+        // 👇👇👇 遊戲數據區 👇👇👇
+        // ==========================================
+        const GAME_DATA = {
+            agentName: "驊容小寶貝", 
+            missionCode: "LOVE-2026",
+            finalMessage: "系統解鎖成功！\n\n其實這個遊戲的終點不是寶藏，而是我們一起走過的路。\n情人節快樂，我的最愛大傻B！❤️",
+            locations: [
+                {
+                    id: 1,
+                    name: "台灣 - 起點",
+                    icon: "map-pin",
+                    bgImage: "images/level1.jpg", 
+                    description: "我們被傳送到了一個熟悉的地方，空氣中飄著甜甜的味道。",
+                    searchPoints: [
+                        { name: "檢查口袋", content: "只有一包藥，是感冒了嗎?" },
+                        { name: "查看背包", content: "有紙巾，你可以用它擦鼻涕，但這不是關鍵。" },
+                        { name: "撿起地上的收據", content: "線索發現！\n這是一張充滿奶香的收據。你千萬不想錯了!\n我們第一次約會的甜點餐廳名字是？(十個字)" }
+                    ],
+                    answer: "台中市第四信用合作社", 
+                    hint: "提示：有點冷，是宮原眼科的分店"
+                },
+                {
+                    id: 2,
+                    name: "野柳 - 奇石陣",
+                    icon: "wind",
+                    bgImage: "images/level2.jpg",
+                    description: "周圍都是奇怪形狀的岩石，海風很大，似乎有一個石頭在盯著我們看。",
+                    searchPoints: [
+                        { name: "望向海邊", content: "今天天氣真的很美呢。" },
+                        { name: "究竟是誰", content: "是誰感染了我們!" },
+                        { name: "尋找最高的那顆頭", content: "線索發現！\n你看這個石頭的脖子越來越細了。\n它的名字是？" }
+                    ],
+                    answer: "女王頭",
+                    hint: "提示：King的相反"
+                },
+                {
+                    id: 3,
+                    name: "金山 - 擁擠的街道",
+                    icon: "users",
+                    bgImage: "images/level3.jpg",
+                    description: "這裡人山人海，大家手裡都在街上走來走去。",
+                    searchPoints: [
+                        { name: "往遠邊走走", content: "線索發現！\n那個是什麼?!\n我們那天想做卻做不到的是？(兩個字)" },
+                        { name: "看店家招牌", content: "這是花生糖阿，想不到這麼好吃。" }
+                    ],
+                    answer: "泡腳",
+                    hint: "提示：老子褲都脫了，你說沒開"
+                },
+                {
+                    id: 4,
+                    name: "宜蘭 - 夜之市",
+                    icon: "moon",
+                    bgImage: "images/level4.jpg",
+                    description: "天黑了，肚子餓了。這裡充滿了卜肉跟蔥餅的香味。",
+                    searchPoints: [
+                        { name: "打開Google Map", content: "GPS訊號微弱..." },
+                        { name: "問路人", content: "路人說：就是那個很有名的夜市啊！" },
+                        { name: "看入口拱門", content: "線索發現！\n拱門上寫著我們要去的夜市名字。\n四個字：" }
+                    ],
+                    answer: "羅東夜市",
+                    hint: "提示：小春"
+                },
+                {
+                    id: 5,
+                    name: "日月潭 - 湖泊",
+                    icon: "cloud-rain",
+                    bgImage: "images/level5.jpg",
+                    description: "下船後有很多人，我們站在一起，手裡拿著一顆熱騰騰的蛋。",
+                    searchPoints: [
+                        { name: "看看這店", content: "茶葉店老闆娘的愛情故事真有愛呢" },
+                        { name: "吃一口蛋", content: "線索發現！\n這顆蛋不太好吃，沒有預期的香菇和紅茶味道。\n是誰賣的茶葉蛋？(兩個字)" },
+                        { name: "看船票", content: "票上寫著「水社碼頭」。" }
+                    ],
+                    answer: "阿婆",
+                    hint: "提示：年纪很大的女性"
+                },
+                {
+                    id: 6,
+                    name: "香港 - 迪士尼魔法咒",
+                    icon: "sparkles", 
+                    bgImage: "images/level6.jpg",
+                    description: "坐上小熊維尼冒險之旅，一起出發囉。",
+                    searchPoints: [
+                        { name: "去坐森林油流之旅", content: "哇，那隻河馬好臭哦，那個船長一臉很厭世的在講冷笑話呢。" },
+                        { name: "去美國小鎮大街", content: "線索發現！\n那雪糕看起來很好吃呢，是期間限定的。\n我們吃了什麼口味的雪糕？(兩個字)" }
+                    ],
+                    answer: "白桃",
+                    hint: "提示：屁股"
+                },
+                {
+                    id: 7,
+                    name: "鹿港 - 窄巷迷宮",
+                    icon: "minimize-2", 
+                    bgImage: "images/level7.jpg",
+                    description: "這裡的巷子窄到兩個人很難同時通過，我們差點卡住。",
+                    searchPoints: [
+                        { name: "嘗試通過", content: "好擠啊！" },
+                        { name: "只有一半的井", content: "靠半個井，這也是景點嗎！" },
+                        { name: "看牆上的塗鴉", content: "線索發現！\n這條巷子的名字有點害羞。\n輸入巷子的名字(三個字)：" }
+                    ],
+                    answer: "摸乳巷",
+                    hint: "提示：我最愛做的"
+                },
+                {
+                    id: 8,
+                    name: "嘉義 - 火雞飯",
+                    icon: "utensils",
+                    bgImage: "images/level8.jpg",
+                    description: "來到這座城市，空氣中飄著雞油的香味。不是一般的雞。",
+                    searchPoints: [
+                        { name: "聞一聞味道", content: "嫩的雞肉，還有烤肉漢堡。" },
+                        { name: "看菜單", content: "竟然有比我們聰明的魚，不可能的!" },
+                        { name: "看到奇怪的人", content: "線索發現！\n是無臉男，他手上拿著什麼？\n輸入三個字：" }
+                    ],
+                    answer: "金元寶",
+                    hint: "提示：發光的"
+                },
+                {
+                    id: 9,
+                    name: "阿里山 - 黎明行動",
+                    icon: "sunrise",
+                    bgImage: "images/level9.jpg",
+                    description: "好冷！現在是凌晨，周圍一片漆黑，我們在等小火車。",
+                    searchPoints: [
+                        { name: "看手錶", content: "線索發現！\n日出時間究竟是幾點？\n(幾點幾分，例如8點02分)" },
+                        { name: "吃了豬肉丸", content: "稍微暖和了一點。" }
+                    ],
+                    answer: "5點45分",
+                    hint: "提示：天還沒亮"
+                },
+                {
+                    id: 10,
+                    name: "高雄 - 開車出發",
+                    icon: "heart",
+                    bgImage: "images/level10.jpg",
+                    description: "我們開起了電動車，還差點撞車了。",
+                    searchPoints: [
+                        { name: "看看車子", content: "車子還好，但曾經有開過車的驊容開得我心驚膽顫。" },
+                        { name: "回想記憶", content: "線索發現！\n為什麼我們要開得老遠的，是為了買什麼?\n你就是大傻B：" }
+                    ],
+                    answer: "地瓜酥",
+                    hint: "提示：傻B"
+                },
+                {
+                    id: 11,
+                    name: "日本 - 未來之旅",
+                    icon: "heart",
+                    bgImage: "images/level11.jpg",
+                    description: "小碗碎了怎麼辦",
+                    searchPoints: [
+                        { name: "看看Cyrus", content: "線索發現！\n小寶貝不要哭哭，我們一起再去買好了，我只想對你講3個字\n3個字：" }
+                    ],
+                    answer: "我愛你",
+                    hint: "提示：沒提示"
+                }
+            ]
+        };
+
+        // ==========================================
+        // 🛠️ 系統組件 (v6.1 閃亮小傻B修正版) 🛠️
+        // ==========================================
+
+        const FloatingBubbles = () => {
+            const [items, setItems] = useState([]);
+            useEffect(() => {
+                const interval = setInterval(() => {
+                    const id = Date.now();
+                    const left = Math.random() * 100;
+                    const duration = 8 + Math.random() * 10;
+                    const size = 10 + Math.random() * 30;
+                    const type = Math.random() > 0.5 ? 'heart' : 'bubble'; // 50% 機率是愛心，50% 是泡泡
+                    
+                    // 隨機符號：愛心、實心圓、空心圓、閃光
+                    const symbol = type === 'heart' 
+                        ? ['❤️', '💖', '💗'][Math.floor(Math.random() * 3)] 
+                        : ['○', '.。', '⚪', '✨'][Math.floor(Math.random() * 4)];
+                    
+                    setItems(prev => [...prev, { id, left, duration, size, symbol, type }]);
+                    
+                    setTimeout(() => {
+                        setItems(prev => prev.filter(h => h.id !== id));
+                    }, duration * 1000);
+                }, 300); // 產生頻率加快
+                return () => clearInterval(interval);
+            }, []);
             return (
-                <div className="min-h-screen bg-rose-50 text-rose-900 flex flex-col relative pb-40">
-                    <FloatingBubbles />
-
-                    {/* === 背景層 === */}
-                    <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
-                        <div className="absolute inset-0 bg-gradient-to-br from-rose-50 via-pink-50 to-rose-100"></div>
-
-                        {/* 手機版背景圖 */}
-                        <div className="md:hidden absolute inset-0 flex items-center justify-center">
-                            <img 
-                                src={currentLevel.bgImage} 
-                                className="w-full h-full object-contain opacity-100" 
-                                alt="background"
-                            />
-                            {/* 底部漸層 */}
-                            <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-white/95 to-transparent"></div>
+                <>
+                    {items.map(h => (
+                        <div 
+                            key={h.id} 
+                            className={`floating-item ${h.type === 'bubble' ? 'text-white/70' : 'text-pink-300/80'}`} 
+                            style={{ 
+                                left: `${h.left}%`, 
+                                animationDuration: `${h.duration}s`, 
+                                fontSize: `${h.size}px` 
+                            }}
+                        >
+                            {h.symbol}
                         </div>
+                    ))}
+                </>
+            );
+        };
 
-                        {/* 電腦版: 左右相框 */}
-                        <div className="hidden md:block absolute inset-0">
-                            <div className="absolute left-[2%] top-24 w-[35vw] h-[60vh] bubble-box p-3 shadow-2xl transform transition-all animate-gentle-float bg-white/20" style={{ '--rot': '-4deg' }}>
-                                <div className="w-full h-full rounded-[1.5rem] overflow-hidden shadow-inner flex items-center justify-center relative bg-white/30">
-                                    <img src={currentLevel.bgImage} className="w-full h-full object-contain" />
-                                </div>
-                            </div>
-                            <div className="absolute right-[2%] top-24 w-[35vw] h-[60vh] bubble-box p-3 shadow-2xl transform transition-all animate-gentle-float bg-white/20" style={{ '--rot': '4deg', animationDelay: '1s' }}>
-                                <div className="w-full h-full rounded-[1.5rem] overflow-hidden shadow-inner flex items-center justify-center relative bg-white/30">
-                                    <img src={currentLevel.bgImage} className="w-full h-full object-contain" />
-                                </div>
-                            </div>
+        class ErrorBoundary extends React.Component {
+            constructor(props) {
+                super(props);
+                this.state = { hasError: false, error: null };
+            }
+            static getDerivedStateFromError(error) { return { hasError: true, error }; }
+            render() {
+                if (this.state.hasError) return <div className="p-4 text-red-500">System Error</div>;
+                return this.props.children;
+            }
+        }
+
+        const Icon = ({ name, className }) => {
+            const [svgHtml, setSvgHtml] = useState(null);
+            useEffect(() => {
+                if (!window.lucide) return;
+                const tempDiv = document.createElement('div');
+                const iTag = document.createElement('i');
+                iTag.setAttribute('data-lucide', name);
+                if (className) iTag.setAttribute('class', className);
+                tempDiv.appendChild(iTag);
+                try {
+                    window.lucide.createIcons({ root: tempDiv, nameAttr: 'data-lucide' });
+                    setSvgHtml(tempDiv.innerHTML);
+                } catch (e) { setSvgHtml(`<span>?</span>`); }
+            }, [name]);
+            if (!svgHtml) return <span className={`inline-block ${className || ''}`} style={{ width: '1em', height: '1em' }}></span>;
+            return <span className={className} dangerouslySetInnerHTML={{ __html: svgHtml }} style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }} />;
+        };
+
+        const TerminalLine = ({ text, delay = 0 }) => {
+            const [display, setDisplay] = useState('');
+            useEffect(() => {
+                let i = 0;
+                const timer = setTimeout(() => {
+                    const interval = setInterval(() => {
+                        setDisplay(text.substring(0, i + 1));
+                        i++;
+                        if (i === text.length) clearInterval(interval);
+                    }, 50);
+                    return () => clearInterval(interval);
+                }, delay);
+                return () => clearTimeout(timer);
+            }, [text, delay]);
+            return <div className="font-mono text-rose-500 mb-2 text-lg text-shadow-sm">♥ {display}<span className="animate-pulse">_</span></div>;
+        };
+
+        const GameContent = () => {
+            const [gameState, setGameState] = useState('boot'); 
+            const [currentLevelIndex, setCurrentLevelIndex] = useState(0);
+            const [foundClue, setFoundClue] = useState(null);
+            const [inputAnswer, setInputAnswer] = useState('');
+            const [errorMsg, setErrorMsg] = useState('');
+            const [logs, setLogs] = useState([]);
+            const [isShaking, setIsShaking] = useState(false);
+            const logsEndRef = useRef(null);
+
+            useEffect(() => {
+                if(logsEndRef.current) logsEndRef.current.scrollIntoView({ behavior: "smooth" });
+            }, [logs]);
+
+            useEffect(() => {
+                if (gameState === 'boot') setTimeout(() => setGameState('locked'), 3800);
+            }, [gameState]);
+
+            const currentLevel = GAME_DATA.locations[currentLevelIndex];
+
+            const addLog = (msg, type = 'info') => {
+                const colors = { info: 'text-pink-600', warn: 'text-purple-600', error: 'text-red-500', success: 'text-rose-600' };
+                setLogs(prev => [...prev, { time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}), msg, color: colors[type] }]);
+            };
+
+            const handleSearch = (point) => {
+                addLog(`正在查看: ${point.name}...`, 'info');
+                setTimeout(() => {
+                    if (point.content.includes("線索發現")) {
+                        setFoundClue(point.content);
+                        setGameState('solving');
+                        addLog("✨ 發現重要回憶！", 'warn');
+                        if (navigator.vibrate) navigator.vibrate(200);
+                    } else {
+                        addLog(`回憶片段: ${point.content}`, 'info');
+                    }
+                }, 600);
+            };
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                const cleanInput = inputAnswer.trim().toLowerCase().replace(/\s/g, '');
+                const cleanAnswer = currentLevel.answer.toLowerCase().replace(/\s/g, '');
+
+                addLog(`心靈感應中: ${inputAnswer}...`, 'info');
+
+                if (cleanInput === cleanAnswer || cleanInput.includes(cleanAnswer)) {
+                    addLog("回答正確！愛心解鎖成功 ❤️", 'success');
+                    setGameState('unlocked');
+                    if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+                    setTimeout(() => {
+                        if (currentLevelIndex + 1 < GAME_DATA.locations.length) {
+                            setCurrentLevelIndex(prev => prev + 1);
+                            setGameState('searching');
+                            setFoundClue(null);
+                            setInputAnswer('');
+                        } else {
+                            setGameState('victory');
+                        }
+                    }, 2500);
+                } else {
+                    // 👇👇👇 修改點：閃亮亮小傻B + 恥笑Emoji + 3秒延遲 👇👇👇
+                    setErrorMsg('🤭 小傻B 🤪'); 
+                    addLog("錯誤：不是這個喔～", 'error');
+                    setIsShaking(true);
+                    setInputAnswer('');
+                    if (navigator.vibrate) navigator.vibrate(500);
+                    setTimeout(() => { setErrorMsg(''); setIsShaking(false); }, 3000); // 延長到 3 秒
+                }
+            };
+
+            // 1. Boot Screen
+            if (gameState === 'boot') {
+                return (
+                    <div className="h-screen bg-pink-50 flex flex-col items-center justify-center font-mono text-pink-600 p-6 relative">
+                        <FloatingBubbles />
+                        <div className="w-full max-w-md bubble-box p-8 border-white/50 bg-white/20 backdrop-blur-sm">
+                            <TerminalLine text="正在載入甜蜜回憶..." delay={0} />
+                            <TerminalLine text="同步愛心頻率中..." delay={1000} />
+                            <TerminalLine text={`目標對象: ${GAME_DATA.agentName}`} delay={2000} />
+                            <TerminalLine text="準備開啟戀愛冒險..." delay={3000} />
                         </div>
                     </div>
+                );
+            }
 
-                    {/* Header */}
-                    <div className="bg-white/30 backdrop-blur-sm border-b border-white/40 p-4 flex justify-between items-center sticky top-0 z-30 shadow-sm">
-                        <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 bg-white/40 rounded-full flex items-center justify-center border border-white/60 shadow-sm">
-                                <Icon name={currentLevel.icon} className="text-pink-500 w-6 h-6" />
+            // 2. Start Screen
+            if (gameState === 'locked') {
+                return (
+                    <div className="h-screen bg-rose-50 flex flex-col items-center justify-center p-6 relative overflow-hidden">
+                        <FloatingBubbles />
+                        <div className="z-10 text-center space-y-8 max-w-lg w-full">
+                            <div className="flex justify-center mb-6">
+                                <div className="bubble-box p-6 backdrop-blur-md animate-bounce bg-white/30 border-white/60">
+                                    <Icon name="lock" className="w-16 h-16 text-rose-400" />
+                                </div>
                             </div>
                             <div>
-                                <div className="text-[10px] text-pink-400 mono-font tracking-widest">LOC.{currentLevel.id}</div>
-                                <div className="font-bold text-lg text-rose-800">{currentLevel.name}</div>
-                            </div>
-                        </div>
-                        <div className="flex flex-col items-end">
-                            <div className="mono-font text-xs text-pink-400">LEVEL</div>
-                            <div className="text-rose-500 font-mono font-bold text-lg">{Math.round(((currentLevelIndex) / GAME_DATA.locations.length) * 100)}%</div>
-                        </div>
-                    </div>
-
-                    {/* Main Content (Bubble Style) */}
-                    <main className="flex-1 p-6 max-w-2xl mx-auto w-full flex flex-col gap-6 z-10">
-                        {/* 描述框 - 泡泡風格 */}
-                        <div className="bubble-box p-6 bg-gradient-to-b from-white/30 to-white/10 shadow-lg relative overflow-hidden backdrop-blur-[2px]">
-                            <div className="absolute top-0 right-0 p-4 opacity-20 pointer-events-none">
-                                <Icon name={currentLevel.icon} className="w-40 h-40 text-white" />
-                            </div>
-                            <h3 className="text-pink-500 font-bold mb-3 text-sm mono-font tracking-wider flex items-center gap-2 drop-shadow-sm">
-                                <Icon name="map" className="w-4 h-4" /> SCENE DESCRIPTION
-                            </h3>
-                            <p className="text-lg leading-relaxed text-rose-900 font-bold drop-shadow-sm relative z-10">{currentLevel.description}</p>
-                        </div>
-
-                        {gameState === 'searching' ? (
-                            <div className="space-y-4 fade-in">
-                                <div className="text-xs text-rose-500 mono-font mb-2 text-center bg-white/40 py-1 rounded-full border border-white/40 inline-block px-4 mx-auto block w-fit shadow-sm">--- 請選擇調查區域 ---</div>
-                                <div className="grid grid-cols-1 gap-4">
-                                    {currentLevel.searchPoints.map((point, idx) => (
-                                        <button key={idx} onClick={() => handleSearch(point)} className="group bg-white/30 hover:bg-white/50 border border-white/60 p-5 rounded-[2rem] text-left flex items-center justify-between shadow-sm hover:shadow-md active:scale-[0.98] transition-all backdrop-blur-[2px]">
-                                            <span className="flex items-center gap-4 text-lg font-bold text-rose-800 drop-shadow-sm">
-                                                <div className="bg-white/40 p-2 rounded-full transition-colors text-pink-500 shadow-sm">
-                                                    <Icon name="search" className="w-5 h-5" />
-                                                </div>
-                                                {point.name}
-                                            </span>
-                                            <Icon name="chevron-right" className="w-5 h-5 text-white drop-shadow-md" />
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-                        ) : gameState === 'solving' ? (
-                            <div className="fade-in bubble-box p-6 bg-gradient-to-b from-white/40 to-white/20 shadow-xl">
-                                <div className="flex gap-4 mb-6 bg-white/30 p-4 rounded-[1.5rem] border border-white/40">
-                                    <div className="bg-white/50 p-3 rounded-full h-fit shadow-sm">
-                                        <Icon name="key" className="w-5 h-5 text-pink-600" />
-                                    </div>
-                                    <div>
-                                        <h3 className="text-pink-600 font-mono text-xs mb-1 font-bold tracking-wider">✨ SECRET FOUND</h3>
-                                        <p className="text-rose-900 font-bold leading-relaxed drop-shadow-sm">{foundClue}</p>
-                                    </div>
-                                </div>
-
-                                <form onSubmit={handleSubmit} className="space-y-4">
-                                    <div className="relative">
-                                        <input 
-                                            type="text" 
-                                            value={inputAnswer}
-                                            onChange={(e) => setInputAnswer(e.target.value)}
-                                            placeholder="請輸入愛的密碼..."
-                                            className={`w-full bg-white/40 border-2 ${errorMsg ? 'border-red-400' : 'border-white/60 focus:border-white'} text-rose-700 font-mono text-xl py-4 px-6 rounded-full outline-none text-center tracking-widest placeholder:text-pink-400/70 shadow-inner transition-all backdrop-blur-sm ${isShaking ? 'shake' : ''}`}
-                                            autoFocus
-                                            autoComplete="off"
-                                        />
-                                        {errorMsg && (
-                                            <div className="absolute top-full left-0 w-full text-center text-red-500 font-bold text-sm mt-2 animate-bounce drop-shadow-sm">
-                                                {errorMsg}
-                                            </div>
-                                        )}
-                                    </div>
-                                    <button className="w-full bg-white/40 hover:bg-white/60 border border-white/60 text-rose-600 font-bold text-lg py-4 rounded-full shadow-[0_0_15px_rgba(255,255,255,0.6)] active:scale-95 transition-all">
-                                        UNLOCK / 解鎖回憶
-                                    </button>
-                                    <div className="text-center">
-                                        <button type="button" className="text-xs text-white hover:text-pink-200 underline decoration-dotted p-2 drop-shadow-md font-bold" onClick={() => alert(currentLevel.hint)}>
-                                            [ 偷偷看提示 ]
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                        ) : (
-                            <div className="flex flex-col items-center justify-center py-12 animate-pulse text-pink-500 transform scale-110 transition-transform duration-500">
-                                <div className="bubble-box p-6 bg-white/40 shadow-xl mb-6">
-                                    <Icon name="unlock" className="w-16 h-16 text-white drop-shadow-md" />
-                                </div>
-                                <div className="mono-font text-2xl font-bold tracking-widest text-white drop-shadow-lg text-stroke">ACCESS GRANTED</div>
-                            </div>
-                        )}
-                    </main>
-
-                    {/* Log Area */}
-                    <div className="fixed bottom-0 left-0 w-full bg-white/30 border-t border-white/40 p-3 h-32 font-mono text-sm shadow-[0_-4px_20px_rgba(0,0,0,0.05)] z-40 backdrop-blur-md">
-                        <div className="text-pink-500 text-[10px] mb-2 flex justify-between px-2 font-bold">
-                            <span>♥ LOVE LOG // v6.0</span>
-                            <span className="animate-pulse text-rose-600">● LIVE</span>
-                        </div>
-                        <div className="overflow-y-auto h-20 flex flex-col space-y-1 scroll-smooth px-2">
-                            {logs.map((log, i) => (
-                                <div key={i} className={`${log.color} break-words font-bold drop-shadow-sm`}>
-                                    <span className="opacity-60 text-xs">[{log.time}]</span> {log.msg}
-                                </div>
-                            ))}
-                            <div ref={logsEndRef} />
-                            {logs.length === 0 && <span className="text-pink-400 italic">> 等待輸入中...</span>}
-                        </div>
-                    </div>
-                </div>
-            );
-        };
-
-        const App = () => {
-            return (
-                <ErrorBoundary>
-                    <GameContent />
-                </ErrorBoundary>
-            );
-        };
-
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
-    </script>
-</body>
-</html>
+                                <h1 className="text-4xl font-b
