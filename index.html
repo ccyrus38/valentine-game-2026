@@ -75,7 +75,7 @@
                     searchPoints: [
                         { name: "檢查口袋", content: "只有一包藥，是感冒了嗎?" },
                         { name: "查看背包", content: "有紙巾，你可以用它擦鼻涕，但這不是關鍵。" },
-                        { name: "撿起地上的收據", content: "線索發現！\n這是一張充滿奶香的收據。你千萬不想錯色色的!\n我們第一次約會的甜點餐廳名字是？(十個字)" }
+                        { name: "撿起地上的收據", content: "線索發現！\n這是一張充滿奶香的收據。你千萬不想錯了!\n我們第一次約會的甜點餐廳名字是？(十個字)" }
                     ],
                     answer: "台中市第四信用合作社", 
                     hint: "提示：有點冷，是宮原眼科的分店"
@@ -218,7 +218,7 @@
         };
 
         // ==========================================
-        // 🛠️ 系統組件 (v4.0 浪漫粉紅版) 🛠️
+        // 🛠️ 系統組件 (v4.1 清晰背景修正版) 🛠️
         // ==========================================
 
         // 愛心特效組件
@@ -402,7 +402,7 @@
                             <TerminalLine text={`目標對象: ${GAME_DATA.agentName}`} delay={2000} />
                             <TerminalLine text="準備開啟戀愛冒險..." delay={3000} />
                         </div>
-                        <div className="absolute bottom-4 right-4 text-xs text-pink-400">Love System v4.0</div>
+                        <div className="absolute bottom-4 right-4 text-xs text-pink-400">Love System v4.1</div>
                     </div>
                 );
             }
@@ -463,18 +463,19 @@
             // 3 & 4. Gameplay (Pink Theme)
             return (
                 <div className="min-h-screen bg-rose-50 text-rose-900 flex flex-col relative pb-40">
-                    {/* 背景圖片層 - 清晰化 */}
+                    {/* 背景圖片層 - 清晰化修正 */}
                     <div className="fixed inset-0 z-0">
-                        <div className="absolute inset-0 bg-pink-50"></div>
+                        {/* 移除純色背景遮擋 */}
+                        
                         <img 
                             key={currentLevel.bgImage} 
                             src={currentLevel.bgImage} 
-                            className="w-full h-full object-cover opacity-100 transition-opacity duration-1000 ease-in-out" 
+                            className="w-full h-full object-cover opacity-100" 
                             alt="background"
-                            onError={(e) => e.target.style.display = 'none'} 
+                            // ⚠️ 移除 onError 隱藏，方便除錯。如果路徑錯了，會顯示破圖圖示。
                         />
-                        {/* 淺色漸層，讓下方文字清楚，但不遮擋圖片 */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-white/90 via-white/40 to-transparent"></div>
+                        {/* 修正漸層：大幅降低白色，只保留底部一點點 */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-white/95 via-transparent to-transparent"></div>
                     </div>
                     
                     <FloatingHearts />
@@ -578,7 +579,7 @@
                     {/* Log Area */}
                     <div className="fixed bottom-0 left-0 w-full bg-white/95 border-t border-pink-200 p-3 h-36 font-mono text-sm shadow-[0_-4px_20px_rgba(0,0,0,0.05)] z-40 backdrop-blur-md">
                         <div className="text-pink-400 text-xs mb-2 flex justify-between px-2">
-                            <span>♥ LOVE LOG // v4.0</span>
+                            <span>♥ LOVE LOG // v4.1</span>
                             <span className="animate-pulse text-rose-500">● LIVE</span>
                         </div>
                         <div className="overflow-y-auto h-24 flex flex-col space-y-1 scroll-smooth px-2">
@@ -608,4 +609,3 @@
     </script>
 </body>
 </html>
-
