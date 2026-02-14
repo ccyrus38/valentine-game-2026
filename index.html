@@ -79,7 +79,7 @@
                     id: 1,
                     name: "台灣 - 起點",
                     icon: "map-pin",
-                    bgImage: "images/level1.jpg", // ⚠️ 請確保 GitHub 上有這個檔案
+                    bgImage: "images/level1.jpg", 
                     description: "我們被傳送到了一個熟悉的地方，空氣中飄著甜甜的味道。",
                     searchPoints: [
                         { name: "檢查口袋", content: "只有一包藥，是感冒了嗎?" },
@@ -137,7 +137,7 @@
                     bgImage: "images/level5.jpg",
                     description: "下船後有很多人，我們站在一起，手裡拿著一顆熱騰騰的蛋。",
                     searchPoints: [
-                        { name: "看看這店", content: "茶葉店老闆娘的愛情故事真有愛呢" }
+                        { name: "看看這店", content: "茶葉店老闆娘的愛情故事真有愛呢" }, // 👈 之前這裡少了一個逗號
                         { name: "吃一口蛋", content: "線索發現！\n這顆蛋不太好吃，沒有預期的香菇和紅茶味道。\n是誰賣的茶葉蛋？(兩個字)" },
                         { name: "看船票", content: "票上寫著「水社碼頭」。" }
                     ],
@@ -211,7 +211,7 @@
                     answer: "地瓜酥",
                     hint: "提示：傻B"
                 },
-                                {
+                {
                     id: 11,
                     name: "日本 - 未來之旅",
                     icon: "heart",
@@ -227,7 +227,7 @@
         };
 
         // ==========================================
-        // 🛠️ 系統組件 (v2.2 圖片支援版) 🛠️
+        // 🛠️ 系統組件 (v2.3 修正版) 🛠️
         // ==========================================
 
         class ErrorBoundary extends React.Component {
@@ -238,7 +238,17 @@
             static getDerivedStateFromError(error) { return { hasError: true, error }; }
             render() {
                 if (this.state.hasError) {
-                    return <div className="p-4 text-red-500">System Error. Please refresh.</div>;
+                    return (
+                        <div className="h-screen bg-slate-900 text-red-500 flex flex-col items-center justify-center p-6">
+                            <h2 className="text-2xl font-bold mb-4">SYSTEM ERROR</h2>
+                            <pre className="bg-black p-4 rounded text-sm overflow-auto max-w-full">
+                                {this.state.error ? this.state.error.toString() : "Unknown Error"}
+                            </pre>
+                            <button onClick={() => window.location.reload()} className="mt-6 px-6 py-2 bg-red-600 text-white rounded">
+                                REBOOT SYSTEM
+                            </button>
+                        </div>
+                    );
                 }
                 return this.props.children;
             }
@@ -340,7 +350,6 @@
                         }
                     }, 2500);
                 } else {
-                    // 👇👇👇 修改點：錯誤訊息改為 "小傻B" 👇👇👇
                     setErrorMsg('小傻B'); 
                     addLog("錯誤：密碼不符。", 'error');
                     setIsShaking(true);
@@ -355,7 +364,7 @@
                 return (
                     <div className="h-screen bg-black flex flex-col items-center justify-center font-mono text-green-500 p-6 relative">
                         <div className="w-full max-w-md">
-                            <TerminalLine text="INITIALIZING SYSTEM v2.2..." delay={0} />
+                            <TerminalLine text="INITIALIZING SYSTEM v2.3..." delay={0} />
                             <TerminalLine text="LOADING MEMORY MODULES..." delay={1000} />
                             <TerminalLine text={`TARGET: ${GAME_DATA.agentName}`} delay={2000} />
                             <TerminalLine text="ENCRYPTING CONNECTION..." delay={3000} />
@@ -419,16 +428,15 @@
                 <div className="min-h-screen bg-slate-950 text-gray-200 flex flex-col relative pb-40">
                     <div className="scan-line opacity-30"></div>
 
-                    {/* 👇👇👇 背景圖片層 (新增) 👇👇👇 */}
+                    {/* 👇👇👇 背景圖片層 👇👇👇 */}
                     <div className="fixed inset-0 z-0">
-                         {/* 使用預設黑色背景防止圖片載入前閃爍 */}
                         <div className="absolute inset-0 bg-slate-900"></div>
                         <img 
                             key={currentLevel.bgImage} 
                             src={currentLevel.bgImage} 
                             className="w-full h-full object-cover opacity-40 transition-opacity duration-1000 ease-in-out"
                             alt="background"
-                            onError={(e) => e.target.style.display = 'none'} // 如果圖片還沒上傳，自動隱藏不破圖
+                            onError={(e) => e.target.style.display = 'none'} 
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/80 to-slate-900/80"></div>
                     </div>
@@ -501,7 +509,6 @@
                                             autoFocus
                                             autoComplete="off"
                                         />
-                                        {/* 👇👇👇 修改點：錯誤訊息顯示邏輯 👇👇👇 */}
                                         {errorMsg && (
                                             <div className="absolute top-full left-0 w-full text-center text-red-400 font-bold text-lg mt-2 animate-bounce">
                                                 {errorMsg}
@@ -531,7 +538,7 @@
 
                     <div className="fixed bottom-0 left-0 w-full bg-black/95 border-t-2 border-slate-800 p-3 h-36 font-mono text-sm shadow-2xl z-40 backdrop-blur">
                         <div className="text-slate-500 text-xs mb-2 flex justify-between">
-                            <span>SYSTEM LOG // v2.2</span>
+                            <span>SYSTEM LOG // v2.3</span>
                             <span className="animate-pulse text-green-500">● LIVE</span>
                         </div>
                         <div className="overflow-y-auto h-24 flex flex-col space-y-1 scroll-smooth">
