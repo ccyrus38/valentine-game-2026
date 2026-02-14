@@ -218,7 +218,7 @@
         };
 
         // ==========================================
-        // 🛠️ 系統組件 (v4.1 清晰背景修正版) 🛠️
+        // 🛠️ 系統組件 (v4.2 圖片全貌修正版) 🛠️
         // ==========================================
 
         // 愛心特效組件
@@ -402,7 +402,7 @@
                             <TerminalLine text={`目標對象: ${GAME_DATA.agentName}`} delay={2000} />
                             <TerminalLine text="準備開啟戀愛冒險..." delay={3000} />
                         </div>
-                        <div className="absolute bottom-4 right-4 text-xs text-pink-400">Love System v4.1</div>
+                        <div className="absolute bottom-4 right-4 text-xs text-pink-400">Love System v4.2</div>
                     </div>
                 );
             }
@@ -464,18 +464,18 @@
             return (
                 <div className="min-h-screen bg-rose-50 text-rose-900 flex flex-col relative pb-40">
                     {/* 背景圖片層 - 清晰化修正 */}
-                    <div className="fixed inset-0 z-0">
-                        {/* 移除純色背景遮擋 */}
+                    <div className="fixed inset-0 z-0 flex items-center justify-center bg-pink-50">
                         
                         <img 
                             key={currentLevel.bgImage} 
                             src={currentLevel.bgImage} 
-                            className="w-full h-full object-cover opacity-100" 
+                            // 👇 修改這裡：改用 object-contain 讓圖片顯示全貌，不裁切
+                            className="w-full h-full object-contain opacity-100" 
                             alt="background"
                             // ⚠️ 移除 onError 隱藏，方便除錯。如果路徑錯了，會顯示破圖圖示。
                         />
                         {/* 修正漸層：大幅降低白色，只保留底部一點點 */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-white/95 via-transparent to-transparent"></div>
+                        <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-white/95 to-transparent pointer-events-none"></div>
                     </div>
                     
                     <FloatingHearts />
@@ -579,7 +579,7 @@
                     {/* Log Area */}
                     <div className="fixed bottom-0 left-0 w-full bg-white/95 border-t border-pink-200 p-3 h-36 font-mono text-sm shadow-[0_-4px_20px_rgba(0,0,0,0.05)] z-40 backdrop-blur-md">
                         <div className="text-pink-400 text-xs mb-2 flex justify-between px-2">
-                            <span>♥ LOVE LOG // v4.1</span>
+                            <span>♥ LOVE LOG // v4.2</span>
                             <span className="animate-pulse text-rose-500">● LIVE</span>
                         </div>
                         <div className="overflow-y-auto h-24 flex flex-col space-y-1 scroll-smooth px-2">
