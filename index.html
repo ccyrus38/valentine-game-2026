@@ -77,7 +77,7 @@
         const { useState, useEffect, useRef } = React;
 
         // ==========================================
-        // 👇👇👇 遊戲數據區 (已修復語法錯誤) 👇👇👇
+        // 👇👇👇 遊戲數據區 👇👇👇
         // ==========================================
         const GAME_DATA = {
             agentName: "BB & 豬豬", 
@@ -150,7 +150,7 @@
                 {
                     id: 6,
                     name: "香港 - 迪士尼魔法咒",
-                    icon: "sparkles", // Changed from 'Disney' which is not a valid Lucide icon
+                    icon: "sparkles", 
                     description: "坐上小熊維尼冒險之旅，一起出發囉。",
                     searchPoints: [
                         { name: "去坐上船", content: "哇，那隻河馬好臭哦，那個船長很厭世的在講笑話呢。" },
@@ -190,10 +190,10 @@
                     icon: "sunrise",
                     description: "好冷！現在是凌晨，周圍一片漆黑，我們在等小火車。",
                     searchPoints: [
-                        { name: "看手錶", content: "線索發現！\n為了看日出，我們坐上幾點開出的火車？\n(3?4?5?)" },
+                        { name: "看手錶", content: "線索發現！\n日出時間究竟是幾點？\n(幾點幾分，例如8點02分)" },
                         { name: "吃了豬肉丸", content: "稍微暖和了一點。" }
                     ],
-                    answer: "4點半",
+                    answer: "5點45分",
                     hint: "提示：天還沒亮"
                 },
                 {
@@ -211,9 +211,43 @@
             ]
         };
 
-        // Icon Component wrapper
+        // ==========================================
+        // 🛠️ 系統組件 (已修復 Crash 問題) 🛠️
+        // ==========================================
+
+        // 徹底重寫的 Icon 組件：使用 HTML 字串渲染，完全避免 React 衝突
         const Icon = ({ name, className }) => {
-            return <i data-lucide={name} className={className}></i>;
+            const [svgHtml, setSvgHtml] = useState(null);
+
+            useEffect(() => {
+                if (!window.lucide) return;
+
+                // 1. 在記憶體中建立一個暫時的元素 (不放進網頁)
+                const tempDiv = document.createElement('div');
+                const iTag = document.createElement('i');
+                iTag.setAttribute('data-lucide', name);
+                
+                // 把 class 加到 i 標籤，Lucide 會把它轉移到 svg 上
+                if (className) iTag.setAttribute('class', className);
+                
+                tempDiv.appendChild(iTag);
+
+                // 2. 讓 Lucide 處理這個暫時元素
+                window.lucide.createIcons({
+                    root: tempDiv
+                });
+
+                // 3. 取出生成的 SVG HTML 字串
+                setSvgHtml(tempDiv.innerHTML);
+            }, [name, className]);
+
+            // 如果還沒生成好，顯示一個佔位符，避免畫面跳動
+            if (!svgHtml) {
+                return <span className={`inline-block ${className || ''}`} style={{ minWidth: '1em', minHeight: '1em' }}></span>;
+            }
+
+            // 4. 將 SVG 字串注入，React 只把它當作普通 HTML，不會報錯
+            return <span dangerouslySetInnerHTML={{ __html: svgHtml }} style={{ display: 'contents' }} />;
         };
 
         // Typing Effect Component
@@ -245,11 +279,6 @@
             const [logs, setLogs] = useState([]);
             const [isShaking, setIsShaking] = useState(false);
             const logsEndRef = useRef(null);
-
-            // Re-render icons when DOM updates
-            useEffect(() => {
-                lucide.createIcons();
-            }, [gameState, currentLevelIndex, foundClue]);
 
             // Auto-scroll logs
             useEffect(() => {
@@ -289,7 +318,6 @@
                         setFoundClue(point.content);
                         setGameState('solving');
                         addLog("⚠️ 警告：偵測到加密數據！", 'warn');
-                        // Vibrate if on mobile
                         if (navigator.vibrate) navigator.vibrate(200);
                     } else {
                         addLog(`分析結果: ${point.content}`, 'info');
@@ -316,8 +344,6 @@
                             setGameState('searching');
                             setFoundClue(null);
                             setInputAnswer('');
-                            // Optional: Clear logs or keep them
-                            // setLogs([]); 
                         } else {
                             setGameState('victory');
                         }
@@ -376,7 +402,7 @@
                                 </p>
                                 <button 
                                     onClick={() => setGameState('searching')}
-                                    className="w-full bg-blue-600 hover:bg-blue-500 text-white font-mono text-xl py-4 rounded-lg shadow-[0_0_20px_rgba(37,99,235,0.4)] transition-all transform active:scale-95 font-bold tracking-wider"
+                                    className="w-full bg-blue-600 hover:bg-blue-500 text-white font-mono text-xl py-4 rounded-lg shadow-[0_0_20px_rgba(37,99,235,0.4)] transition-all transform active:scale-95 font-bold tracking-wider cursor-pointer"
                                 >
                                     [ 開始任務 / START ]
                                 </button>
